@@ -29,6 +29,7 @@ import {
 import { ActionSet } from '../ActionSet';
 import { Wrap } from '../../global/js/utils/Wrap';
 import { usePortalTarget } from '../../global/js/hooks/usePortalTarget';
+import wrapFocus from '../../global/js/utils/wrapFocus';
 
 // The block part of our conventional BEM class names (bc__E--M).
 const bc = `${pkg.prefix}--tearsheet`;
@@ -102,6 +103,8 @@ export const TearsheetShell = React.forwardRef(
     const resizer = useRef(null);
     const modalRef = ref || localRef;
     const { width } = useResizeObserver(resizer);
+    const startTrapRef = useRef();
+    const endTrapRef = useRef();
 
     const wide = size === 'wide';
 
@@ -194,6 +197,28 @@ export const TearsheetShell = React.forwardRef(
       }
     }
 
+    const handleTabKey = ({
+      target: oldActiveNode,
+      relatedTarget: currentActiveNode,
+    }) => {
+      // focus trap should only be set if the side panel is a `slideOver` type
+      if (open && modalRef) {
+        wrapFocus({
+          bodyNode: modalRef.current,
+          startTrapRef,
+          endTrapRef,
+          currentActiveNode,
+          oldActiveNode,
+        });
+      }
+    };
+
+    const handleKeydown = (event) => {
+      if (event?.key === 'Tab') {
+        handleTabKey();
+      }
+    };
+
     if (position <= depth) {
       // Include a modal header if and only if one or more of these is given.
       // We can't use a Wrap for the ModalHeader because ComposedModal requires
@@ -210,121 +235,142 @@ export const TearsheetShell = React.forwardRef(
       const includeActions = actions && actions?.length > 0;
 
       return renderPortalUse(
-        <ComposedModal
-          {
-            // Pass through any other property values.
-            ...rest
-          }
-          aria-label={ariaLabel || getNodeTextContent(title)}
-          className={cx(bc, className, {
-            [`${bc}--stacked-${position}-of-${depth}`]:
-              // Don't apply this on the initial open of a single tearsheet.
-              depth > 1 || (depth === 1 && prevDepth.current > 1),
-            [`${bc}--wide`]: wide,
-            [`${bc}--narrow`]: !wide,
-          })}
-          style={{
-            [`--${bc}--stacking-scale-factor-single`]: (width - 32) / width,
-            [`--${bc}--stacking-scale-factor-double`]: (width - 64) / width,
-          }}
-          containerClassName={cx(`${bc}__container`, {
-            [`${bc}__container--lower`]: verticalPosition === 'lower',
-          })}
-          {...{ onClose, open, selectorPrimaryFocus }}
-          onFocus={handleFocus}
-          preventCloseOnClickOutside={!isPassive}
-          ref={modalRef}
-          selectorsFloatingMenus={[
-            `.${carbonPrefix}--overflow-menu-options`,
-            `.${carbonPrefix}--tooltip`,
-            '.flatpickr-calendar',
-            `.${bc}__container`,
-          ]}
-          size="sm"
-        >
-          {includeHeader && (
-            <ModalHeader
-              className={cx(`${bc}__header`, {
-                [`${bc}__header--with-close-icon`]: effectiveHasCloseIcon,
-                [`${bc}__header--with-nav`]: navigation,
-              })}
-              closeClassName={cx({
-                [`${bc}__header--no-close-icon`]: !effectiveHasCloseIcon,
-              })}
-              closeModal={onClose}
-              iconDescription={closeIconDescription}
-            >
-              <Wrap
-                className={`${bc}__header-content`}
-                element={wide ? Layer : undefined}
+        <>
+          <span
+            ref={startTrapRef}
+            tabIndex="0"
+            role="link"
+            className={`${carbonPrefix}--visually-hidden`}
+          >
+            Focus sentinel
+          </span>
+          <ComposedModal
+            {
+              // Pass through any other property values.
+              ...rest
+            }
+            aria-label={ariaLabel || getNodeTextContent(title)}
+            className={cx(bc, className, {
+              [`${bc}--stacked-${position}-of-${depth}`]:
+                // Don't apply this on the initial open of a single tearsheet.
+                depth > 1 || (depth === 1 && prevDepth.current > 1),
+              [`${bc}--wide`]: wide,
+              [`${bc}--narrow`]: !wide,
+            })}
+            style={{
+              [`--${bc}--stacking-scale-factor-single`]: (width - 32) / width,
+              [`--${bc}--stacking-scale-factor-double`]: (width - 64) / width,
+            }}
+            containerClassName={cx(`${bc}__container`, {
+              [`${bc}__container--lower`]: verticalPosition === 'lower',
+            })}
+            {...{ onClose, open, selectorPrimaryFocus }}
+            onFocus={handleFocus}
+            onKeyDown={handleKeydown}
+            preventCloseOnClickOutside={!isPassive}
+            ref={modalRef}
+            selectorsFloatingMenus={[
+              `.${carbonPrefix}--overflow-menu-options`,
+              `.${carbonPrefix}--tooltip`,
+              '.flatpickr-calendar',
+              `.${bc}__container`,
+            ]}
+            size="sm"
+          >
+            {includeHeader && (
+              <ModalHeader
+                className={cx(`${bc}__header`, {
+                  [`${bc}__header--with-close-icon`]: effectiveHasCloseIcon,
+                  [`${bc}__header--with-nav`]: navigation,
+                })}
+                closeClassName={cx({
+                  [`${bc}__header--no-close-icon`]: !effectiveHasCloseIcon,
+                })}
+                closeModal={onClose}
+                iconDescription={closeIconDescription}
               >
-                <Wrap className={`${bc}__header-fields`}>
-                  {/* we create the label and title here instead of passing them
+                <Wrap
+                  className={`${bc}__header-content`}
+                  element={wide ? Layer : undefined}
+                >
+                  <Wrap className={`${bc}__header-fields`}>
+                    {/* we create the label and title here instead of passing them
                       as modal header props so we can wrap them in layout divs */}
-                  <Wrap element="h2" className={`${bcModalHeader}__label`}>
-                    {label}
+                    <Wrap element="h2" className={`${bcModalHeader}__label`}>
+                      {label}
+                    </Wrap>
+                    <Wrap
+                      element="h3"
+                      className={cx(
+                        `${bcModalHeader}__heading`,
+                        `${bc}__heading`
+                      )}
+                    >
+                      {title}
+                    </Wrap>
+                    <Wrap className={`${bc}__header-description`}>
+                      {description}
+                    </Wrap>
+                  </Wrap>
+                  <Wrap className={`${bc}__header-actions`}>
+                    {headerActions}
+                  </Wrap>
+                </Wrap>
+                <Wrap className={`${bc}__header-navigation`}>{navigation}</Wrap>
+              </ModalHeader>
+            )}
+            <Wrap element={ModalBody} className={`${bc}__body`}>
+              <Wrap
+                className={cx({
+                  [`${bc}__influencer`]: true,
+                  [`${bc}__influencer--wide`]: influencerWidth === 'wide',
+                })}
+                neverRender={influencerPosition === 'right'}
+              >
+                {influencer}
+              </Wrap>
+              <Wrap className={`${bc}__right`}>
+                <Wrap className={`${bc}__main`} alwaysRender={includeActions}>
+                  <Wrap
+                    className={`${bc}__content`}
+                    alwaysRender={influencer && influencerPosition === 'right'}
+                  >
+                    {children}
                   </Wrap>
                   <Wrap
-                    element="h3"
-                    className={cx(
-                      `${bcModalHeader}__heading`,
-                      `${bc}__heading`
-                    )}
+                    className={cx({
+                      [`${bc}__influencer`]: true,
+                      [`${bc}__influencer--wide`]: influencerWidth === 'wide',
+                    })}
+                    neverRender={influencerPosition !== 'right'}
                   >
-                    {title}
-                  </Wrap>
-                  <Wrap className={`${bc}__header-description`}>
-                    {description}
+                    {influencer}
                   </Wrap>
                 </Wrap>
-                <Wrap className={`${bc}__header-actions`}>{headerActions}</Wrap>
+                {includeActions && (
+                  <Wrap className={`${bc}__button-container`}>
+                    <ActionSet
+                      actions={actions}
+                      buttonSize={wide ? '2xl' : null}
+                      className={`${bc}__buttons`}
+                      size={wide ? '2xl' : 'lg'}
+                      aria-hidden={!open}
+                    />
+                  </Wrap>
+                )}
               </Wrap>
-              <Wrap className={`${bc}__header-navigation`}>{navigation}</Wrap>
-            </ModalHeader>
-          )}
-          <Wrap element={ModalBody} className={`${bc}__body`}>
-            <Wrap
-              className={cx({
-                [`${bc}__influencer`]: true,
-                [`${bc}__influencer--wide`]: influencerWidth === 'wide',
-              })}
-              neverRender={influencerPosition === 'right'}
-            >
-              {influencer}
             </Wrap>
-            <Wrap className={`${bc}__right`}>
-              <Wrap className={`${bc}__main`} alwaysRender={includeActions}>
-                <Wrap
-                  className={`${bc}__content`}
-                  alwaysRender={influencer && influencerPosition === 'right'}
-                >
-                  {children}
-                </Wrap>
-                <Wrap
-                  className={cx({
-                    [`${bc}__influencer`]: true,
-                    [`${bc}__influencer--wide`]: influencerWidth === 'wide',
-                  })}
-                  neverRender={influencerPosition !== 'right'}
-                >
-                  {influencer}
-                </Wrap>
-              </Wrap>
-              {includeActions && (
-                <Wrap className={`${bc}__button-container`}>
-                  <ActionSet
-                    actions={actions}
-                    buttonSize={wide ? '2xl' : null}
-                    className={`${bc}__buttons`}
-                    size={wide ? '2xl' : 'lg'}
-                    aria-hidden={!open}
-                  />
-                </Wrap>
-              )}
-            </Wrap>
-          </Wrap>
-          <div className={`${bc}__resize-detector`} ref={resizer} />
-        </ComposedModal>
+            <div className={`${bc}__resize-detector`} ref={resizer} />
+          </ComposedModal>
+          <span
+            ref={endTrapRef}
+            tabIndex="0"
+            role="link"
+            className={`${carbonPrefix}--visually-hidden`}
+          >
+            Focus sentinel
+          </span>
+        </>
       );
     } else {
       pconsole.warn('Tearsheet not rendered: maximum stacking depth exceeded.');
