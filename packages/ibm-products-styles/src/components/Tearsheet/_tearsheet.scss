@@ -173,9 +173,9 @@ $motion-duration: $duration-moderate-02;
     );
   }
 
-  &.#{$block-class}--wide .#{$block-class}__container {
-    width: 100%;
-  }
+  // &.#{$block-class}--wide .#{$block-class}__container {
+  //   width: 100%;
+  // }
 
   &.#{$block-class}--wide
     .#{$pkg-prefix}--action-set
@@ -186,6 +186,16 @@ $motion-duration: $duration-moderate-02;
   @include breakpoint(md) {
     &.#{$block-class}--wide .#{$block-class}__container {
       width: calc(100% - (2 * #{$spacing-10}));
+    }
+  }
+
+  @include breakpoint-down(md) {
+    .#{$block-class}__container {
+      width: 100%;
+    }
+
+    .#{$block-class}__container {
+      max-height: 100%;
     }
   }
 
@@ -314,6 +324,12 @@ $motion-duration: $duration-moderate-02;
     // apply the class again for higher specificity
     &.#{$block-class}__influencer p {
       padding-right: 0;
+    }
+  }
+
+  @include breakpoint-down(md) {
+    .#{$block-class}__influencer {
+      display: none;
     }
   }
 
