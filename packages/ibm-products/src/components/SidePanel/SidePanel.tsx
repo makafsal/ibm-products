@@ -49,7 +49,7 @@ type SidePanelBaseProps = {
   /**
    * Sets the action toolbar buttons
    */
-  actionToolbarButtons?: ButtonProps[];
+  actionToolbarButtons?: ButtonProps<any>[];
 
   /**
    * The primary actions to be shown in the side panel. Each action is
@@ -59,7 +59,7 @@ type SidePanelBaseProps = {
    *
    * See https://react.carbondesignsystem.com/?path=/docs/components-button--default#component-api
    */
-  actions?: ButtonProps[];
+  actions?: ButtonProps<any>[];
 
   /**
    * Determines if the title will animate on scroll
@@ -90,6 +90,11 @@ type SidePanelBaseProps = {
    * Sets the current step of the side panel
    */
   currentStep?: number;
+
+  /**
+   * Disable focus trap
+   */
+  disableFocusTrap?: boolean;
 
   /**
    * Unique identifier
@@ -223,6 +228,7 @@ const defaults = {
   navigationBackIconDescription: 'Back',
   placement: 'right',
   size: 'md',
+  disableFocusTrap: false,
 };
 
 /**
@@ -241,6 +247,7 @@ export let SidePanel = React.forwardRef(
       closeIconDescription = defaults.closeIconDescription,
       condensedActions,
       currentStep = defaults.currentStep,
+      disableFocusTrap = defaults.disableFocusTrap,
       id = blockClass,
       includeOverlay,
       labelText,
@@ -287,7 +294,7 @@ export let SidePanel = React.forwardRef(
     const shouldReduceMotion = useReducedMotion();
 
     // Title animation on scroll related state
-    const [labelTextHeight, setLabelTextHeight] = useState<any>(0);
+    const [labelTextHeight, setLabelTextHeight] = useState(0);
 
     useEffect(() => {
       if (open && !titleRef?.current) {
@@ -616,7 +623,7 @@ export let SidePanel = React.forwardRef(
     ]);
 
     useEffect(() => {
-      if (open) {
+      if (open && !disableFocusTrap) {
         setTimeout(() => {
           if (selectorPrimaryFocus) {
             const primeFocusEl = document?.querySelector(selectorPrimaryFocus);
@@ -628,7 +635,13 @@ export let SidePanel = React.forwardRef(
           }
         }, 0);
       }
-    }, [animationComplete, firstElement, open, selectorPrimaryFocus]);
+    }, [
+      animationComplete,
+      disableFocusTrap,
+      firstElement,
+      open,
+      selectorPrimaryFocus,
+    ]);
 
     const primaryActionContainerClassNames = cx([
       `${blockClass}__actions-container`,
@@ -838,7 +851,7 @@ export let SidePanel = React.forwardRef(
               animate="visible"
               exit="exit"
               custom={{ placement, shouldReduceMotion }}
-              onKeyDown={keyDownListener}
+              onKeyDown={!disableFocusTrap ? keyDownListener : undefined}
             >
               <>
                 {/* header */}
@@ -883,6 +896,7 @@ SidePanel.propTypes = {
   /**
    * Sets the action toolbar buttons
    */
+  /**@ts-ignore */
   actionToolbarButtons: PropTypes.arrayOf(
     PropTypes.shape({
       label: PropTypes.string,
@@ -916,6 +930,7 @@ SidePanel.propTypes = {
     ActionSet.validateActions(),
     PropTypes.arrayOf(
       PropTypes.shape({
+        /**@ts-ignore*/
         ...Button.propTypes,
         kind: PropTypes.oneOf([
           'ghost',
@@ -929,6 +944,7 @@ SidePanel.propTypes = {
         label: PropTypes.string,
         loading: PropTypes.bool,
         // we duplicate this Button prop to improve the DocGen here
+        /**@ts-ignore*/
         onClick: Button.propTypes.onClick,
       })
     ),

@@ -526,6 +526,59 @@ const ReturnFocusToOpenButtonTemplate = ({
   );
 };
 
+// eslint-disable-next-line react/prop-types
+const DisableFocusTrapTemplate = ({ actions, slug, ...args }) => {
+  const [open, setOpen] = useState(true);
+  return (
+    <>
+      <Grid id="ibm-products-page-content" className={`${prefix}grid`}>
+        <Column lg={16} md={8} sm={4}>
+          <div className={`${prefix}body-content`}>
+            <h5>Section</h5>
+            <div className={`${prefix}text-inputs`}>
+              <TextInput
+                labelText="Input A"
+                id="side-panel-story-text-input-a"
+                className={`${prefix}text-input`}
+              />
+              <TextInput
+                labelText="Input B"
+                id="side-panel-story-text-input-b"
+                className={`${prefix}text-input`}
+              />
+            </div>
+            <div className={`${prefix}text-inputs`}>
+              <TextInput
+                labelText="Input C"
+                id="side-panel-story-text-input-c"
+                className={`${prefix}text-input`}
+              />
+              <TextInput
+                labelText="Input D"
+                id="side-panel-story-text-input-d"
+                className={`${prefix}text-input`}
+              />
+            </div>
+            <Button onClick={() => setOpen(!open)}>
+              {open ? 'Close side panel' : 'Open side panel'}
+            </Button>
+          </div>
+        </Column>
+      </Grid>
+      <SidePanel
+        {...args}
+        open={open}
+        onRequestClose={() => setOpen(false)}
+        actions={actionSets[actions]}
+        slug={slug && sampleSlug}
+        disableFocusTrap={true}
+      >
+        <ChildrenContent />
+      </SidePanel>
+    </>
+  );
+};
+
 export const SlideOver = SlideOverTemplate.bind({});
 SlideOver.args = {
   includeOverlay: true,
@@ -587,6 +640,16 @@ SpecifyElementToHaveInitialFocus.args = {
 export const ReturnFocusToOpenButton = ReturnFocusToOpenButtonTemplate.bind({});
 ReturnFocusToOpenButton.args = {
   ...defaultStoryProps,
+};
+
+export const DisableFocusTrap = DisableFocusTrapTemplate.bind({});
+DisableFocusTrap.args = {
+  placement: 'right',
+  slideIn: true,
+  selectorPageContent: '#ibm-products-page-content',
+  actions: 0,
+  ...defaultStoryProps,
+  labelText: 'Incident management',
 };
 
 export const WithStaticTitle = SlideOverTemplate.bind({});
