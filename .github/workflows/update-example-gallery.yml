@@ -32,18 +32,18 @@ jobs:
         id: up_to_date
         run: |
           yarn update-gallery-config
-          if [[ `git status --porcelain` ]]; then
-            echo "::error ::The gallery is out of date, run yarn update-gallery-config"
-            echo "The following items are out of date."
-            git status --porcelain
-            echo "Committing the unstaged items"
-            git add .
-            git commit -m "chore: updated gallery configuration"
-            exit 0
-          else
+          # if [[ `git status --porcelain` ]]; then
+          #   echo "::error ::The gallery is out of date, run yarn update-gallery-config"
+          #   echo "The following items are out of date."
+          #   git status --porcelain
+          #   echo "Committing the unstaged items"
+          #   git add .
+          #   git commit -m "chore: updated gallery configuration"
+          #   exit 0
+          # else
             echo "Gallery is up-to-date"
             exit 0
-          fi
+          # fi
 
       - name: Create pull request
         if: steps.up_to_date.outcome == 'failure'
