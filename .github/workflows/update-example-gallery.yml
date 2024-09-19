@@ -37,6 +37,7 @@ jobs:
             echo "The following items are out of date."
             git status --porcelain
             echo "Committing the unstaged items"
+            echo ${{ github.actor }}
             git add .
             git commit -m "chore: updated gallery configuration"
             exit 0
