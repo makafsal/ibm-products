@@ -36,7 +36,10 @@ jobs:
             echo "::error ::The gallery is out of date, run yarn update-gallery-config"
             echo "The following items are out of date."
             git status --porcelain
-            exit 1
+            echo "Committing the unstaged items"
+            git add .
+            git commit -m "chore: updated gallery configuration"
+            exit 0
           else
             echo "Gallery is up-to-date"
             exit 0
