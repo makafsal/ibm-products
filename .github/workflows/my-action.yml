@@ -1,19 +1,16 @@
-name: my-action
+name: Slack test
 
-on: push
+on:
+  push
 
 jobs:
-  echo-hello:
+  my-job:
     runs-on: ubuntu-latest
     steps:
-      - name: Say hello
-        run: echo "Hello, world"
-  echo-goodby:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Success step
-        run: |
-          echo "I'll success"
-          exit 0
-      - name: Say goodby
-        run: echo "Goodby!"
+      - uses: actions/checkout@v3
+      - name: Send Slack notification
+        uses: actions/slack-send-message@v3
+        with:
+          token: ${{ secrets.SLACK_BOT_TOKEN }}
+          channel: '#afsal-test-channel'
+          message: 'Workflow completed successfully!'
