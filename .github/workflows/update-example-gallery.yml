@@ -38,13 +38,11 @@ jobs:
             echo "The following items are out of date."
             git status --porcelain
             echo "Committing the unstaged items"
-            echo ${{ github.actor }}
             git config user.name "GitHub Actions Bot"
             git config user.email "github-actions[bot]@users.noreply.github.com"
             git add .
             git commit -m "chore: updated gallery configuration"
-            yarn update-gallery-config
-            exit 0
+            exit 1
           else
             echo "Gallery is up-to-date"
             exit 0
