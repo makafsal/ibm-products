@@ -44,7 +44,7 @@ jobs:
           fi
 
       - name: Create pull request
-        if: failure()
+        if: steps.up_to_date.outcome == 'failure'
         run: echo ${{ steps.up_to_date.outcome }}
         # if: steps.up_to_date.outcome == 'failure'
         # id: create-pr
