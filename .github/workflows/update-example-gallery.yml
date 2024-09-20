@@ -48,7 +48,8 @@ jobs:
         id: create-pr
         uses: peter-evans/create-pull-request@v4
         with:
-          token: ${{ secrets.CREATE_PR_ACCESS_TOKEN }}
+          # token: ${{ secrets.CREATE_PR_ACCESS_TOKEN }}
+          token: ${{ secrets.GITHUB_TOKEN }}
           commit-message: 'chore: update example gallery'
           committer: GitHub <noreply@github.com>
           author:
