@@ -37,7 +37,7 @@ jobs:
             echo "::error ::The gallery is out of date, run yarn update-gallery-config"
             echo "The following items are out of date."
             git status --porcelain
-            exit 0
+            exit 1
           else
             echo "Gallery is up-to-date"
             exit 0
@@ -45,7 +45,7 @@ jobs:
 
       - name: Create pull request
         if: failure()
-        run: echo "Yep"
+        run: echo ${{ steps.up_to_date.outcome }}
         # if: steps.up_to_date.outcome == 'failure'
         # id: create-pr
         # uses: peter-evans/create-pull-request@v4
