@@ -7,10 +7,15 @@ jobs:
   my-job:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - name: Send Slack notification
-        uses: actions/slack-send-message@v3
+      - name: Send custom JSON data to Slack workflow
+        id: slack
+        uses: slackapi/slack-github-action@v1.27.0
         with:
-          token: ${{ secrets.SLACK_BOT_TOKEN }}
-          channel: '#afsal-test-channel'
-          message: 'Workflow completed successfully!'
+          # This data can be any valid JSON from a previous step in the GitHub Action
+          payload: |
+            {
+              "key": "value",
+              "foo": "bar"
+            }
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
