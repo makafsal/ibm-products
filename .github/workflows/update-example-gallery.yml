@@ -1,6 +1,7 @@
 name: Update example gallery # Updates examples in every month
 
 on:
+  push:
   workflow_dispatch:
   schedule:
     - cron: '* * * * *' # Updates will happen at 12:00 AM, on day 1 of the month
