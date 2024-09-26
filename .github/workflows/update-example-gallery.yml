@@ -65,11 +65,12 @@ jobs:
         uses: peter-evans/create-pull-request@v4
         with:
           token: ${{ secrets.CREATE_PR_ACCESS_TOKEN }}
-          # commit-message: 'chore: update example gallery'
-          # committer: GitHub <noreply@github.com>
+          commit-message: 'chore: update example gallery'
+          committer: GitHub <noreply@github.com>
           author:
             ${{ github.actor }} <${{ github.actor }}@users.noreply.github.com>
-          base: ${{ env.BRANCH_NAME }}
+          branch: ${{ env.BRANCH_NAME }}
+          base: main
           title: 'chore: update example gallery'
           body: |
             This PR was automatically generated to update provided examples.
