@@ -56,32 +56,39 @@ jobs:
           git commit -m "chore: update examples gallery"
           git push --set-upstream origin ${{ env.BRANCH_NAME }}
 
-      - name: Create pull request
+      - name: create pull request
         if: failure() && steps.up_to_date.outcome == 'failure'
-        id: create-pr
-        uses: peter-evans/create-pull-request@v4
-        with:
-          token: ${{ secrets.CREATE_PR_ACCESS_TOKEN }}
-          # commit-message: 'chore: update example gallery'
-          # committer: GitHub <noreply@github.com>
-          # author:
-          #   ${{ secrets.CARBON_BOT_NAME }} ${{ secrets.CARBON_BOT_EMAIL }}
-          branch: ${{ env.BRANCH_NAME }}
-          base: 'main'
-          # branch: 'update-examples'
-          # branch-suffix: random
-          title: 'chore: update example gallery'
-          body: |
-            This PR was automatically generated to update provided examples.
-            The goal is to keep our examples up-to-date with the latest changes from our own package.
+        run: gh pr create -B main -H ${{ env.BRANCH_NAME }} --title 'Merge branch_to_merge into base_branch' --body 'Created by Github action'
+        env:
+          GITHUB_TOKEN: ${{ secrets.CREATE_PR_ACCESS_TOKEN }}
 
-            #### What did you change?
+          
+      # - name: Create pull request
+      #   if: failure() && steps.up_to_date.outcome == 'failure'
+      #   id: create-pr
+      #   uses: peter-evans/create-pull-request@v4
+      #   with:
+      #     token: ${{ secrets.CREATE_PR_ACCESS_TOKEN }}
+      #     # commit-message: 'chore: update example gallery'
+      #     # committer: GitHub <noreply@github.com>
+      #     # author:
+      #     #   ${{ secrets.CARBON_BOT_NAME }} ${{ secrets.CARBON_BOT_EMAIL }}
+      #     branch: ${{ env.BRANCH_NAME }}
+      #     base: 'main'
+      #     # branch: 'update-examples'
+      #     # branch-suffix: random
+      #     title: 'chore: update example gallery'
+      #     body: |
+      #       This PR was automatically generated to update provided examples.
+      #       The goal is to keep our examples up-to-date with the latest changes from our own package.
 
-            This action ran `yarn update-gallery-config` to update examples as necessary.
+      #       #### What did you change?
 
-            #### How did you test and verify your work?
+      #       This action ran `yarn update-gallery-config` to update examples as necessary.
 
-            This PR should only be merged reviewing the following checks:
-            - [ ] `yarn ci-check` runs cleanly and all tests pass.
-            - [ ] Storybook runs correctly in the Netlify deploy-preview.
-              - [ ] Updated components render correctly in the examples section of Storybook.
+      #       #### How did you test and verify your work?
+
+      #       This PR should only be merged reviewing the following checks:
+      #       - [ ] `yarn ci-check` runs cleanly and all tests pass.
+      #       - [ ] Storybook runs correctly in the Netlify deploy-preview.
+      #         - [ ] Updated components render correctly in the examples section of Storybook.
