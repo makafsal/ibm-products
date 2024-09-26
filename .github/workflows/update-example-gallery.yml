@@ -68,7 +68,7 @@ jobs:
           #   ${{ secrets.CARBON_BOT_NAME }} ${{ secrets.CARBON_BOT_EMAIL }}
           branch: ${{ env.BRANCH_NAME }}
           # branch: 'update-examples'
-          branch-suffix: random
+          # branch-suffix: random
           title: 'chore: update example gallery'
           body: |
             This PR was automatically generated to update provided examples.
