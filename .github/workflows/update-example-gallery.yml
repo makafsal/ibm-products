@@ -22,6 +22,12 @@ jobs:
           node-version: '20.x'
           cache: yarn
 
+      - name: Checkout new branch
+        run: |
+          git config --global user.email ${{ secrets.CARBON_BOT_EMAIL }}
+          git config --global user.name ${{ secrets.CARBON_BOT_NAME }}
+          git checkout -b ${{ env.BRANCH_NAME }}
+
       - name: Cache dependencies
         uses: actions/cache@v4
         with:
@@ -49,13 +55,10 @@ jobs:
         if: failure() && steps.up_to_date.outcome == 'failure'
         id: commit_changes
         run: |
-          git config --global user.email ${{ secrets.CARBON_BOT_EMAIL }}
-          git config --global user.name ${{ secrets.CARBON_BOT_NAME }}
-          git checkout -b ${{ env.BRANCH_NAME }}
           git add .
           git commit -m "chore: update examples gallery"
           git push --set-upstream origin ${{ env.BRANCH_NAME }}
-          
+
       - name: Create pull request
         if: failure() && steps.up_to_date.outcome == 'failure'
         id: create-pr
@@ -67,7 +70,7 @@ jobs:
           # author:
           #   ${{ secrets.CARBON_BOT_NAME }} ${{ secrets.CARBON_BOT_EMAIL }}
           branch: ${{ env.BRANCH_NAME }}
-          base: 'main'
+          # base: 'main'
           # branch: 'update-examples'
           # branch-suffix: random
           title: 'chore: update example gallery'
