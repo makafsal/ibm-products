@@ -66,9 +66,8 @@ jobs:
         with:
           token: ${{ secrets.CREATE_PR_ACCESS_TOKEN }}
           # commit-message: 'chore: update example gallery'
-          # committer: GitHub <noreply@github.com>
-          # author:
-          #   ${{ secrets.CARBON_BOT_NAME }} ${{ secrets.CARBON_BOT_EMAIL }}
+          committer: GitHub <noreply@github.com>
+          author: ${{ secrets.CARBON_BOT_NAME }} ${{ secrets.CARBON_BOT_EMAIL }}
           # branch: ${{ env.BRANCH_NAME }}
           base: ${{ env.BRANCH_NAME }}
           # branch: 'update-examples'
