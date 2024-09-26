@@ -59,30 +59,46 @@ jobs:
           git commit -m "chore: update examples gallery"
           git push --set-upstream origin ${{ env.BRANCH_NAME }}
 
+      - name: Install GitHub CLI
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y gh
+  
+      - name: Authenticate with GitHub CLI
+        run: gh auth login --with-token <<< "${{ secrets.CREATE_PR_ACCESS_TOKEN }}"
+  
       - name: Create pull request
-        if: failure() && steps.up_to_date.outcome == 'failure'
-        id: create-pr
-        uses: peter-evans/create-pull-request@v4
-        with:
-          token: ${{ secrets.CREATE_PR_ACCESS_TOKEN }}
-          commit-message: 'chore: update example gallery'
-          committer: GitHub <noreply@github.com>
-          author:
-            ${{ github.actor }} <${{ github.actor }}@users.noreply.github.com>
-          branch: ${{ env.BRANCH_NAME }}
-          base: main
-          title: 'chore: update example gallery'
-          body: |
-            This PR was automatically generated to update provided examples.
-            The goal is to keep our examples up-to-date with the latest changes from our own package.
+        run: |
+          BRANCH_NAME=${{ env.BRANCH_NAME }} # dynamic branch name
+          gh pr create --base main --head $BRANCH_NAME --title "chore: update example gallery" --body "This PR was automatically generated."
+        env:
+          GITHUB_TOKEN: ${{ secrets.CREATE_PR_ACCESS_TOKEN }}
 
-            #### What did you change?
 
-            This action ran `yarn update-gallery-config` to update examples as necessary.
+      # - name: Create pull request
+      #   if: failure() && steps.up_to_date.outcome == 'failure'
+      #   id: create-pr
+      #   uses: peter-evans/create-pull-request@v4
+      #   with:
+      #     token: ${{ secrets.CREATE_PR_ACCESS_TOKEN }}
+      #     commit-message: 'chore: update example gallery'
+      #     committer: GitHub <noreply@github.com>
+      #     author:
+      #       ${{ github.actor }} <${{ github.actor }}@users.noreply.github.com>
+      #     branch: ${{ env.BRANCH_NAME }}
+      #     base: main
+      #     title: 'chore: update example gallery'
+      #     body: |
+      #       This PR was automatically generated to update provided examples.
+      #       The goal is to keep our examples up-to-date with the latest changes from our own package.
 
-            #### How did you test and verify your work?
+      #       #### What did you change?
 
-            This PR should only be merged reviewing the following checks:
-            - [ ] `yarn ci-check` runs cleanly and all tests pass.
-            - [ ] Storybook runs correctly in the Netlify deploy-preview.
-              - [ ] Updated components render correctly in the examples section of Storybook.
+      #       This action ran `yarn update-gallery-config` to update examples as necessary.
+
+      #       #### How did you test and verify your work?
+
+      #       This PR should only be merged reviewing the following checks:
+      #       - [ ] `yarn ci-check` runs cleanly and all tests pass.
+      #       - [ ] Storybook runs correctly in the Netlify deploy-preview.
+      #         - [ ] Updated components render correctly in the examples section of Storybook.
