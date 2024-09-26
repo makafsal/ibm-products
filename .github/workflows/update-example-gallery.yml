@@ -69,8 +69,8 @@ jobs:
           # committer: GitHub <noreply@github.com>
           # author:
           #   ${{ secrets.CARBON_BOT_NAME }} ${{ secrets.CARBON_BOT_EMAIL }}
-          branch: ${{ env.BRANCH_NAME }}
-          base: 'main'
+          # branch: ${{ env.BRANCH_NAME }}
+          base: ${{ env.BRANCH_NAME }}
           # branch: 'update-examples'
           # branch-suffix: random
           title: 'chore: update example gallery'
