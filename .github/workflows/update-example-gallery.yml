@@ -67,6 +67,7 @@ jobs:
           # author:
           #   ${{ secrets.CARBON_BOT_NAME }} ${{ secrets.CARBON_BOT_EMAIL }}
           branch: ${{ env.BRANCH_NAME }}
+          base: 'main'
           # branch: 'update-examples'
           # branch-suffix: random
           title: 'chore: update example gallery'
