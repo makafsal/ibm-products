@@ -3,7 +3,7 @@ name: Update example gallery # Updates examples once a month
 on:
   workflow_dispatch:
   schedule:
-    - cron: '0 0 15 * *' # At 12:00 AM, on day 15 of the month
+    - cron: '0/1 * * * *' # At 12:00 AM, on day 15 of the month
 
 jobs:
   check_gallery:
