@@ -5,6 +5,9 @@ on:
   schedule:
     - cron: '0/1 * * * *' # At 12:00 AM, on day 15 of the month
 
+env:
+  BRANCH_NAME: update-examples-${{ github.run_id }}
+
 jobs:
   check_gallery:
     runs-on: ubuntu-latest
@@ -42,15 +45,16 @@ jobs:
             exit 0
           fi
 
-      # - name: Commit the changes
-      #   if: failure() && steps.up_to_date.outcome == 'failure'
-      #   id: commit_changes
-      #   run: |
-      #     git config --global user.email ${{ secrets.CARBON_BOT_EMAIL }}
-      #     git config --global user.name ${{ secrets.CARBON_BOT_NAME }}
-      #     git add .
-      #     git commit -m "chore: update examples gallery"
-      #     git push
+      - name: Commit the changes
+        if: failure() && steps.up_to_date.outcome == 'failure'
+        id: commit_changes
+        run: |
+          git config --global user.email ${{ secrets.CARBON_BOT_EMAIL }}
+          git config --global user.name ${{ secrets.CARBON_BOT_NAME }}
+          git checkout -b ${{ env.BRANCH_NAME }}
+          git add .
+          git commit -m "chore: update examples gallery"
+          git push --set-upstream origin ${{ env.BRANCH_NAME }}
 
       - name: Create pull request
         if: failure() && steps.up_to_date.outcome == 'failure'
@@ -62,8 +66,8 @@ jobs:
           committer: GitHub <noreply@github.com>
           author:
             ${{ github.actor }} <${{ github.actor }}@users.noreply.github.com>
-          branch: 'update-examples'
-          branch-suffix: random
+          branch: ${{ env.BRANCH_NAME }}
+          # branch-suffix: random
           title: 'chore: update example gallery'
           body: |
             This PR was automatically generated to update provided examples.
