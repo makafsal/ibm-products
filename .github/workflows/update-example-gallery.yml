@@ -57,7 +57,7 @@ jobs:
           git push --set-upstream origin ${{ env.BRANCH_NAME }}
 
       - name: Create pull request
-        if: steps.up_to_date.outcome == 'failure'
+        if: failure() && steps.up_to_date.outcome == 'failure'
         id: create-pr
         uses: peter-evans/create-pull-request@v4
         with:
