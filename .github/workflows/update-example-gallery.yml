@@ -72,6 +72,7 @@ jobs:
       - name: Create pull request
         if: failure() && steps.up_to_date.outcome == 'failure'
         run: |
+          git checkout ${{ env.BRANCH_NAME }}
           gh pr create --base main --head ${{ env.BRANCH_NAME }} --title "chore: update example gallery" --body "This PR was automatically generated."
         env:
           GITHUB_TOKEN: ${{ secrets.CREATE_PR_ACCESS_TOKEN }}
