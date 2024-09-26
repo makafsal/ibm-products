@@ -74,8 +74,8 @@ jobs:
         run: |
           BRANCH_NAME=${{ env.BRANCH_NAME }} # dynamic branch name
           gh pr create --base main --head $BRANCH_NAME --title "chore: update example gallery" --body "This PR was automatically generated."
-        # env:
-        #   GITHUB_TOKEN: ${{ secrets.CREATE_PR_ACCESS_TOKEN }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.CREATE_PR_ACCESS_TOKEN }}
 
 
       # - name: Create pull request
