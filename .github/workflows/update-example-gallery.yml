@@ -59,20 +59,21 @@ jobs:
           git commit -m "chore: update examples gallery"
           git push --set-upstream origin ${{ env.BRANCH_NAME }}
 
-      - name: Install GitHub CLI
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y gh
-  
-      - name: Authenticate with GitHub CLI
-        run: gh auth login --with-token <<< "${{ secrets.CREATE_PR_ACCESS_TOKEN }}"
-  
-      - name: Create pull request
-        run: |
-          BRANCH_NAME=${{ env.BRANCH_NAME }} # dynamic branch name
-          gh pr create --base main --head $BRANCH_NAME --title "chore: update example gallery" --body "This PR was automatically generated."
-        env:
-          GITHUB_TOKEN: ${{ secrets.CREATE_PR_ACCESS_TOKEN }}
+      - name: Create pull request using GitHub Script
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const branchName = process.env.BRANCH_NAME;  // Use dynamic branch name if needed
+            github.pulls.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: "chore: update example gallery",
+              head: branchName,
+              base: "main",  // or the branch you want to merge into
+              body: "This PR was automatically generated from branch " + branchName
+            });
+        # env:
+        #   BRANCH_NAME: ${{ env.BRANCH_NAME }} # You can extract the branch name dynamically
 
 
       # - name: Create pull request
