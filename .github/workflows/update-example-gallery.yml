@@ -56,6 +56,9 @@ jobs:
           git commit -m "chore: update examples gallery"
           git push --set-upstream origin ${{ env.BRANCH_NAME }}
 
+      - name: Echo
+        run: echo ${{ env.BRANCH_NAME }}
+
       - name: Create pull request
         if: failure() && steps.up_to_date.outcome == 'failure'
         id: create-pr
@@ -66,7 +69,7 @@ jobs:
           committer: GitHub <noreply@github.com>
           author:
             ${{ github.actor }} <${{ github.actor }}@users.noreply.github.com>
-          branch: ${{ env.BRANCH_NAME }}
+          branch: '${{ env.BRANCH_NAME }}'
           # branch-suffix: random
           title: 'chore: update example gallery'
           body: |
