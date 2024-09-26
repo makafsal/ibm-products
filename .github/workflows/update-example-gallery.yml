@@ -71,7 +71,7 @@ jobs:
           committer: GitHub <noreply@github.com>
           author:
             ${{ github.actor }} <${{ github.actor }}@users.noreply.github.com>
-          branch: ${{ steps.branch_name.outputs.branch_name }}
+          head: ${{ steps.branch_name.outputs.branch_name }}
           title: 'chore: update example gallery'
           body: |
             This PR was automatically generated to update provided examples.
