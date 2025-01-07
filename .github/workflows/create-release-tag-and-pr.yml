@@ -53,13 +53,22 @@ jobs:
       - name: Check for conflicts and resolve
         run: |
           git merge origin/test-release-action
+          if [ $? -ne 0 ]; then
+            echo "Merge conflicts detected."
+
+            # Attempt to resolve conflicts using interactive rebase
+            git rebase -i origin/test-release-action 
+
+            # Add a step to check for any remaining conflicts
+            git status 
             if [ $? -ne 0 ]; then
-              echo "Merge conflicts detected"
-              # Resolve conflicts by choosing current version as latest than main
-              git checkout --ours .
-              git add .
-              git commit -m "chore: resolved merge conflicts"
+              echo "Conflicts remain after rebase. Manual resolution required."
+              exit 1
             fi
+
+            git add .
+            git commit -m "chore: resolved merge conflicts"
+          fi
 
       # Create PR with the new branch
       - name: Create Pull Request
