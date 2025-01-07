@@ -47,12 +47,12 @@ jobs:
       # is not affected
       - name: Create branch
         run: |
-          git checkout -b chore/${{ github.event.inputs.tag }}-release
-          git push origin chore/${{ github.event.inputs.tag }}-release
+          git checkout -b test-release-action-2
+          git push origin test-release-action-2
       # Create PR with the new branch
       - name: Create Pull Request
         run: |
-          gh pr create -B test-release-action -H chore/${{ github.event.inputs.tag }}-release --title 'chore(release): ${{ github.event.inputs.tag }}' --body 'Automated release PR for ${{ github.event.inputs.tag }}
+          gh pr create -B test-release-action -H test-release-action-2 --title 'chore(release): ${{ github.event.inputs.tag }}' --body 'Automated release PR for ${{ github.event.inputs.tag }}
             **Checklist**
             - [ ] Verify package version bumps are accurate
             - [ ] Verify CI passes as expected'
