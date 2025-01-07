@@ -47,7 +47,7 @@ jobs:
       # is not affected
       - name: Create branch
         run: |
-          git checkout -b test-release-action-2
+          git checkout test-release-action-2
           git push origin test-release-action-2
       # Create PR with the new branch
       - name: Create Pull Request
