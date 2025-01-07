@@ -48,6 +48,7 @@ jobs:
       - name: Create branch
         run: |
           git checkout test-release-action-2
+          git pull
           git push origin test-release-action-2
 
       - name: Attempt merge
