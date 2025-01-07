@@ -64,6 +64,7 @@ jobs:
 
           # Attempt to resolve conflicts using interactive rebase
           # git rebase -i origin/test-release-action 
+          git checkout --ours .
 
           # Add a step to check for any remaining conflicts
           # git status 
