@@ -50,7 +50,13 @@ jobs:
           git checkout test-release-action-2
           git push origin test-release-action-2
 
+      - name: Attempt merge
+        id: merge-attempt
+        run: |
+          git merge origin/test-release-action
+
       - name: Check for conflicts and resolve
+        if: failure() && steps.merge-attempt.outcome == 'failure'
         run: |
           git merge origin/test-release-action
           if [ $? -ne 0 ]; then
