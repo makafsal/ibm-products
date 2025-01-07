@@ -58,7 +58,6 @@ jobs:
       - name: Check for conflicts and resolve
         if: failure() && steps.merge-attempt.outcome == 'failure'
         run: |
-          git merge origin/test-release-action
           if [ $? -ne 0 ]; then
             echo "Merge conflicts detected."
 
