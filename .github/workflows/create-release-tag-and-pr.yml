@@ -52,7 +52,7 @@ jobs:
 
       - name: Check for conflicts and resolve
         run: |
-          git pull origin/test-release-action
+          git pull test-release-action
           if [ $? -ne 0 ]; then
             echo "Merge conflicts detected"
             # Resolve conflicts by choosing current version as latest than main
