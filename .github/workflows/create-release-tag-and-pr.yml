@@ -55,7 +55,6 @@ jobs:
         id: merge-attempt
         run: |
           git merge origin/test-release-action -Xours || true
-          git push origin test-release-action-2
 
       # Create PR with the new branch
       - name: Create Pull Request
