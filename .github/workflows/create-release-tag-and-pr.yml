@@ -62,6 +62,9 @@ jobs:
           # if [ $? -ne 0 ]; then
           echo "Merge conflicts detected."
 
+          git add .
+          git commit -m "chore: before commit"
+
           # Attempt to resolve conflicts using interactive rebase
           git rebase -i origin/test-release-action 
 
