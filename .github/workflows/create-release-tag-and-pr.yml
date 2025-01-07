@@ -54,30 +54,7 @@ jobs:
       - name: Attempt merge
         id: merge-attempt
         run: |
-          git merge origin/test-release-action
-
-      - name: Check for conflicts and resolve
-        if: failure() && steps.merge-attempt.outcome == 'failure'
-        run: |
-          # if [ $? -ne 0 ]; then
-          echo "Merge conflicts detected."
-
-          git add .
-          git commit -m "chore: before commit"
-
-          # Attempt to resolve conflicts using interactive rebase
-          git rebase -i origin/test-release-action 
-
-          # Check for any remaining conflicts
-          git status 
-          if [ $? -ne 0 ]; then
-            echo "Conflicts remain after rebase. Manual resolution required."
-            exit 0 
-          fi
-
-          git add .
-          git commit -m "chore: resolved merge conflicts"
-          # fi
+          git merge origin/test-release-action -Xours || true
 
       # Create PR with the new branch
       - name: Create Pull Request
