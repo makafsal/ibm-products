@@ -52,13 +52,13 @@ jobs:
 
       - name: Check for conflicts and resolve
         run: |
-          git pull test-release-action
-          if [ $? -ne 0 ]; then
-            echo "Merge conflicts detected"
-            # Resolve conflicts by choosing current version as latest than main
-            git checkout --ours .
-            git add .
-            git commit -m "chore: resolved merge conflicts"
+          git merge origin/test-release-action
+          # if [ $? -ne 0 ]; then
+          echo "Merge conflicts detected"
+          # Resolve conflicts by choosing current version as latest than main
+          git checkout --ours .
+          git add .
+          git commit -m "chore: resolved merge conflicts"
 
       # Create PR with the new branch
       - name: Create Pull Request
