@@ -64,6 +64,7 @@ jobs:
 
           # Attempt to resolve conflicts using interactive rebase
           # git rebase -i origin/test-release-action 
+          echo git status
           git checkout --ours .
 
           # Add a step to check for any remaining conflicts
@@ -73,8 +74,8 @@ jobs:
           #   exit 1
           # fi
 
-          # git add .
-          # git commit -m "chore: resolved merge conflicts"
+          git add .
+          git commit -m "chore: resolved merge conflicts"
           # fi
 
       # Create PR with the new branch
