@@ -64,8 +64,6 @@ class CDSCreateTearsheet extends HostListenerMixin(LitElement) {
 
     // console.log(this.children, steps, this.stepsData.currentStep);
 
-    console.log(this.stepsData.steps);
-
     return html`<c4p-tearsheet
       ?open=${this.open}
       influencer-placement=${TEARSHEET_INFLUENCER_PLACEMENT.LEFT}

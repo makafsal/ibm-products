@@ -14,10 +14,10 @@ import './create-tearsheet-step';
 export const Default = {
   render: () =>
     html`<c4p-create-tearsheet open=${true}>
-      <c4p-create-tearsheet-step slot="content" title="Step 1">
+      <c4p-create-tearsheet-step slot="content">
         Hey 1
       </c4p-create-tearsheet-step>
-      <c4p-create-tearsheet-step slot="content" title="Step 2">
+      <c4p-create-tearsheet-step slot="content">
         Hey 2
       </c4p-create-tearsheet-step>
     </c4p-create-tearsheet>`,
