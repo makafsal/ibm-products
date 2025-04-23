@@ -8,6 +8,7 @@
  */
 
 import { createContext } from '@lit/context';
+import CDSCreateTearsheetStep from './create-tearsheet-step';
 
 export interface Step {
   introStep?: boolean;
@@ -22,8 +23,8 @@ export interface StepContextType {
   setOnNext?: (fn: () => void) => void;
   setOnPrevious?: (fn: () => void) => void;
   setStepData?: (data: Record<string, any>) => void;
-  steps?: HTMLElement[];
-  registerStep?: (step: HTMLElement) => void;
+  steps?: CDSCreateTearsheetStep[];
+  registerStep?: (step: CDSCreateTearsheetStep) => void;
 }
 
 export const stepContext = createContext<StepContextType>({ currentStep: 1 });

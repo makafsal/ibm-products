@@ -17,19 +17,20 @@ import { stepContext, StepContextType } from './step-context';
 @customElement(`${prefix}-create-tearsheet-step`)
 class CDSCreateTearsheetStep extends HostListenerMixin(LitElement) {
   @property({ type: String, reflect: true }) title = '';
+  @property({ type: String, reflect: true }) secondaryLabel = '';
+  @property({ type: Boolean, reflect: true }) disableSubmit = false;
+  @property({ type: Function }) onNext?: () => Promise<void> | void;
 
   @consume({ context: stepContext })
   stepData?: StepContextType;
 
   connectedCallback() {
-    console.log('here ', this);
     super.connectedCallback();
     this.stepData?.registerStep?.(this);
   }
 
   render() {
     return html` <div>
-      ${this.title}
       <slot></slot>
     </div>`;
   }

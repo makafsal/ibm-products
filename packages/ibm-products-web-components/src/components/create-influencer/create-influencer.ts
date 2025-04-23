@@ -29,30 +29,23 @@ class CDSCreateInfluencer extends HostListenerMixin(LitElement) {
 
   render() {
     return html`<cds-progress-indicator vertical>
-      <cds-progress-step
-        state="complete"
-        label="First step ${this.stepData?.currentStep}"
-        secondary-label="Optional label"
-        description="Step 1: Getting started with Carbon Design System"
-      ></cds-progress-step>
-      <cds-progress-step
-        label="Second step with tooltip"
-        state="current"
-      ></cds-progress-step>
-      <cds-progress-step
-        label="Third step with tooltip"
-        state="incomplete"
-      ></cds-progress-step>
-      <cds-progress-step
-        label="Fourth step"
-        secondary-label="Example invalid step"
-        state="invalid"
-      ></cds-progress-step>
-      <cds-progress-step
-        disabled
-        label="Fifth step"
-        state="incomplete"
-      ></cds-progress-step>
+      ${this.stepData?.steps?.map((step, index) => {
+        const state =
+          this.stepData && index < this.stepData?.currentStep
+            ? 'complete'
+            : index === this.stepData?.currentStep
+              ? 'current'
+              : 'incomplete';
+
+        return html`
+          <cds-progress-step
+            state=${state}
+            label=${step.title || `Step ${index + 1}`}
+            secondary-label=${step?.secondaryLabel}
+            description=${`Step ${index + 1}: Description here`}
+          ></cds-progress-step>
+        `;
+      })}
     </cds-progress-indicator>`;
   }
 }

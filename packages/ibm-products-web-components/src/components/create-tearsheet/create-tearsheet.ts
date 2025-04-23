@@ -21,10 +21,13 @@ import { BUTTON_KIND } from '@carbon/web-components/es/components/button/defs';
 import '../create-influencer';
 import { stepContext, StepContextType } from './step-context';
 import { provide } from '@lit/context';
+import CDSCreateTearsheetStep from './create-tearsheet-step';
 /**
  * CreateTearsheet.
  *
  * @element c4p-create-tearsheet
+ *
+ * @fires c4p-create-tearsheet-next-step
  */
 
 @customElement(`${prefix}-create-tearsheet`)
@@ -40,8 +43,8 @@ class CDSCreateTearsheet extends HostListenerMixin(LitElement) {
   stepsData: StepContextType = {
     currentStep: 0,
     steps: [],
-    registerStep: (step: HTMLElement) => {
-      if (this.stepsData?.steps) {
+    registerStep: (step: CDSCreateTearsheetStep) => {
+      if (this.stepsData?.steps && !this.stepsData.steps.includes(step)) {
         this.stepsData = {
           ...this.stepsData,
           steps: [...this.stepsData.steps, step],
@@ -50,19 +53,75 @@ class CDSCreateTearsheet extends HostListenerMixin(LitElement) {
     },
   };
 
-  onNext() {
-    this.stepsData = {
-      ...this.stepsData,
-      currentStep: this.stepsData.currentStep + 1,
-    };
+  private _continueToNextStep() {
+    if (
+      this.stepsData?.steps &&
+      this.stepsData.currentStep + 1 < this.stepsData?.steps?.length
+    ) {
+      this.stepsData = {
+        ...this.stepsData,
+        currentStep: this.stepsData.currentStep + 1,
+      };
+    }
+  }
+
+  private async _handleOnNext() {
+    const currentStepElement = this.stepsData?.steps?.[
+      this.stepsData?.currentStep
+    ] as any;
+    if (currentStepElement?.onNext) {
+      try {
+        await currentStepElement.onNext();
+        this._continueToNextStep();
+      } catch (error) {
+        return;
+      }
+    } else {
+      this._continueToNextStep();
+    }
+  }
+
+  private _handleOnBack() {
+    if (this.stepsData?.steps) {
+      this.stepsData = {
+        ...this.stepsData,
+        currentStep: this.stepsData.currentStep - 1,
+      };
+    }
+  }
+
+  private _handleCancel(triggeredBy: EventTarget | null) {
+    if (this.open) {
+      const init = {
+        bubbles: true,
+        cancelable: true,
+        composed: true,
+        detail: {
+          triggeredBy,
+        },
+      };
+      if (
+        this.dispatchEvent(
+          new CustomEvent(
+            (this.constructor as typeof CDSCreateTearsheet).eventBeforeClose,
+            init
+          )
+        )
+      ) {
+        this.open = false;
+        this.dispatchEvent(
+          new CustomEvent(
+            (this.constructor as typeof CDSCreateTearsheet).eventClose,
+            init
+          )
+        );
+      }
+    }
   }
 
   render() {
-    // const steps = Array.from(this.children).filter(
-    //   (child) => child.slot === 'content'
-    // );
-
-    // console.log(this.children, steps, this.stepsData.currentStep);
+    const currentStepElement =
+      this.stepsData?.steps?.[this.stepsData?.currentStep];
 
     return html`<c4p-tearsheet
       ?open=${this.open}
@@ -73,16 +132,18 @@ class CDSCreateTearsheet extends HostListenerMixin(LitElement) {
       <span slot="title">${'Create Tearsheet'}</span>
 
       <!-- Step content -->
-      <div>${this.stepsData?.steps?.[this.stepsData?.currentStep]}</div>
+      <div>${currentStepElement}</div>
 
       <!-- Progress Indicator -->
       <c4p-create-influencer slot="influencer"></c4p-create-influencer>
 
       <!-- Actions -->
+
       <cds-button
         key=${BUTTON_KIND.TERTIARY}
         slot="actions"
         kind=${BUTTON_KIND.TERTIARY}
+        @click=${this._handleCancel}
       >
         Cancel
       </cds-button>
@@ -90,6 +151,8 @@ class CDSCreateTearsheet extends HostListenerMixin(LitElement) {
         key=${BUTTON_KIND.SECONDARY}
         slot="actions"
         kind=${BUTTON_KIND.SECONDARY}
+        @click=${this._handleOnBack}
+        .disabled=${this.stepsData.currentStep === 0}
       >
         Back
       </cds-button>
@@ -97,11 +160,26 @@ class CDSCreateTearsheet extends HostListenerMixin(LitElement) {
         key=${BUTTON_KIND.PRIMARY}
         slot="actions"
         kind=${BUTTON_KIND.PRIMARY}
-        @click=${this.onNext}
+        @click=${this._handleOnNext}
+        .disabled=${currentStepElement?.disableSubmit}
       >
         Next
       </cds-button>
     </c4p-tearsheet>`;
+  }
+
+  /**
+   * The name of the custom event fired when click on cancel button
+   */
+  static get eventBeforeClose() {
+    return `${prefix}-create-tearsheet-before-close`;
+  }
+
+  /**
+   * The name of the custom event fired when click on cancel button
+   */
+  static get eventClose() {
+    return `${prefix}-create-tearsheet-close`;
   }
 }
 
