@@ -9,6 +9,8 @@
 
 import { LitElement, html } from 'lit';
 import { carbonElement as customElement } from '@carbon/web-components/es/globals/decorators/carbon-element.js';
+import '@carbon/web-components/es/components/progress-indicator/index.js';
+import '@carbon/web-components/es/components/progress-bar/index.js';
 import HostListenerMixin from '@carbon/web-components/es/globals/mixins/host-listener.js';
 import { prefix } from '../../globals/settings';
 import '../tearsheet';
@@ -17,8 +19,6 @@ import {
   TEARSHEET_INFLUENCER_PLACEMENT,
   TEARSHEET_WIDTH,
 } from '../tearsheet/defs';
-import { BUTTON_KIND } from '@carbon/web-components/es/components/button/defs';
-import '../create-influencer';
 import { stepContext, StepContextType } from './step-context';
 import { provide } from '@lit/context';
 import CDSCreateTearsheetStep from './create-tearsheet-step';
@@ -123,6 +123,8 @@ class CDSCreateTearsheet extends HostListenerMixin(LitElement) {
     const currentStepElement =
       this.stepsData?.steps?.[this.stepsData?.currentStep];
 
+    const buttonRenderer = currentStepElement?.buttonRenderer;
+
     return html`<c4p-tearsheet
       ?open=${this.open}
       influencer-placement=${TEARSHEET_INFLUENCER_PLACEMENT.LEFT}
@@ -135,36 +137,41 @@ class CDSCreateTearsheet extends HostListenerMixin(LitElement) {
       <div>${currentStepElement}</div>
 
       <!-- Progress Indicator -->
-      <c4p-create-influencer slot="influencer"></c4p-create-influencer>
+      <cds-progress-indicator vertical slot="influencer">
+        ${this.stepsData?.steps?.map((step, index) => {
+          const state =
+            this.stepsData && index < this.stepsData?.currentStep
+              ? 'complete'
+              : index === this.stepsData?.currentStep
+                ? 'current'
+                : 'incomplete';
+
+          return html`
+            <cds-progress-step
+              state=${state}
+              label=${step.title}
+              secondary-label=${step?.secondaryLabel}
+              description=${step?.description}
+            ></cds-progress-step>
+          `;
+        })}
+      </cds-progress-indicator>
 
       <!-- Actions -->
-
-      <cds-button
-        key=${BUTTON_KIND.TERTIARY}
-        slot="actions"
-        kind=${BUTTON_KIND.TERTIARY}
-        @click=${this._handleCancel}
-      >
-        Cancel
-      </cds-button>
-      <cds-button
-        key=${BUTTON_KIND.SECONDARY}
-        slot="actions"
-        kind=${BUTTON_KIND.SECONDARY}
-        @click=${this._handleOnBack}
-        .disabled=${this.stepsData.currentStep === 0}
-      >
-        Back
-      </cds-button>
-      <cds-button
-        key=${BUTTON_KIND.PRIMARY}
-        slot="actions"
-        kind=${BUTTON_KIND.PRIMARY}
-        @click=${this._handleOnNext}
-        .disabled=${currentStepElement?.disableSubmit}
-      >
-        Next
-      </cds-button>
+      ${buttonRenderer
+        ? buttonRenderer({
+            currentStep: this.stepsData.currentStep,
+            handleNext: this._handleOnNext.bind(this),
+            numSteps: this.stepsData?.steps?.length,
+            handleGoToStep: (step: number) => {
+              this.stepsData = { ...this.stepsData, currentStep: step };
+            },
+            setFormState: () => {},
+            handlePrevious: this._handleOnBack.bind(this),
+            handleCancel: this._handleCancel.bind(this),
+            formState: {},
+          })
+        : null}
     </c4p-tearsheet>`;
   }
 

@@ -18,8 +18,10 @@ import { stepContext, StepContextType } from './step-context';
 class CDSCreateTearsheetStep extends HostListenerMixin(LitElement) {
   @property({ type: String, reflect: true }) title = '';
   @property({ type: String, reflect: true }) secondaryLabel = '';
+  @property({ type: String, reflect: true }) description = '';
   @property({ type: Boolean, reflect: true }) disableSubmit = false;
   @property({ type: Function }) onNext?: () => Promise<void> | void;
+  @property({ type: Function }) buttonRenderer?: (props: any) => any; // <-- Add this
 
   @consume({ context: stepContext })
   stepData?: StepContextType;
