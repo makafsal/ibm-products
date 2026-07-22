@@ -5,58 +5,29 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import React, {
-  forwardRef,
-  Children,
-  isValidElement,
-  ReactNode,
-  useMemo,
-  useCallback,
-} from 'react';
+import React, { forwardRef, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import cx from 'classnames';
 import { CardHeaderProps } from './Card.types';
 import { useCardContext } from './CardContext';
 import { pkg } from '../../../settings';
-import { CardTitleMedia } from './CardTitleMedia';
-import { CardMedia } from './CardMedia';
 
 const componentName = 'CardHeader';
 const blockClass = `${pkg.prefix}--card-next__header`;
 
 /**
- * CardHeader component - Header section of the card
+ * CardHeader component - Header section of the card.
+ * Layout is handled entirely by CSS Grid on __header:
+ *   - CardHeaderMedia spans both columns (full-width row above the title area)
+ *   - CardTitleMedia occupies column 1 (left icon slot)
+ *   - CardTitle occupies column 2 (right text slot), or spans full width when
+ *     CardTitleMedia is absent — detected by the :has selector in SCSS.
+ * No child-scanning or wrapper injection is needed.
  */
 export const CardHeader = forwardRef<HTMLDivElement, CardHeaderProps>(
   ({ className, children, ...rest }, ref) => {
     const context = useCardContext();
     const cardBlockClass = `${pkg.prefix}--card-next`;
-
-    // Single memoised pass — buckets children by type using direct references.
-    // Replaces the previous two-pass pattern (toArray+some then forEach).
-    const { titleMediaElements, mediaElements, otherContent, hasTitleMedia } =
-      useMemo(() => {
-        const titleMedia: ReactNode[] = [];
-        const media: ReactNode[] = [];
-        const other: ReactNode[] = [];
-
-        Children.forEach(children, (child) => {
-          if (isValidElement(child) && child.type === CardTitleMedia) {
-            titleMedia.push(child);
-          } else if (isValidElement(child) && child.type === CardMedia) {
-            media.push(child);
-          } else {
-            other.push(child);
-          }
-        });
-
-        return {
-          titleMediaElements: titleMedia,
-          mediaElements: media,
-          otherContent: other,
-          hasTitleMedia: titleMedia.length > 0,
-        };
-      }, [children]);
 
     const handleDecoratorClick = useCallback(
       (e: React.MouseEvent) => e.stopPropagation(),
@@ -68,23 +39,9 @@ export const CardHeader = forwardRef<HTMLDivElement, CardHeaderProps>(
       []
     );
 
-    const headerClasses = cx(blockClass, className);
-
     return (
-      <div {...rest} ref={ref} className={headerClasses}>
-        {hasTitleMedia ? (
-          <>
-            {mediaElements}
-            <div className={`${cardBlockClass}__header-content`}>
-              {titleMediaElements}
-              <div className={`${cardBlockClass}__title-content`}>
-                {otherContent}
-              </div>
-            </div>
-          </>
-        ) : (
-          children
-        )}
+      <div {...rest} ref={ref} className={cx(blockClass, className)}>
+        {children}
         {context.decorator && (
           <div
             className={`${cardBlockClass}__decorator`}

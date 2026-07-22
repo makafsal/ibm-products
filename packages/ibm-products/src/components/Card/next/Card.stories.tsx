@@ -334,14 +334,10 @@ export const WithMedia = () => (
     </Column>
     <Column lg={4} md={4} sm={4}>
       <Card>
+        <Card.Media ratio="1x1">
+          <img src={placeholder1x1} alt="Placeholder 1:1 ratio" width="100%" />
+        </Card.Media>
         <Card.Header>
-          <Card.Media ratio="1x1">
-            <img
-              src={placeholder1x1}
-              alt="Placeholder 1:1 ratio"
-              width="100%"
-            />
-          </Card.Media>
           <Card.Title description="Perfect for profile images">
             Square Format
           </Card.Title>
@@ -546,6 +542,45 @@ export const WithHeaderActions = () => (
             require text labels instead of icons. This is useful when the action
             needs to be more explicit or when an appropriate icon isn&apos;t
             available.
+          </p>
+        </Card.Body>
+      </Card>
+    </Column>
+    <Column lg={4} md={4} sm={4}>
+      <Card>
+        <Card.Header>
+          <Card.Title
+            label="Category"
+            labelTruncate
+            description="This is a lengthy description that will be clamped to exactly two lines using multi-line truncation so you can see how it interacts with the action buttons above"
+            descriptionTruncate
+            truncate={2}
+          >
+            This is a very long card title that wraps across multiple lines in a
+            narrow container
+          </Card.Title>
+          <Card.Actions>
+            <Card.Action>
+              <IconButton kind="ghost" label="Edit" size="sm">
+                <Edit />
+              </IconButton>
+            </Card.Action>
+            <Card.Action>
+              <IconButton kind="ghost" label="Favorite" size="sm">
+                <Favorite />
+              </IconButton>
+            </Card.Action>
+            <Card.Action>
+              <IconButton kind="ghost" label="Share" size="sm">
+                <Share />
+              </IconButton>
+            </Card.Action>
+          </Card.Actions>
+        </Card.Header>
+        <Card.Body>
+          <p>
+            Truncated label (single line ellipsis), long wrapping title, and
+            description clamped to 2 lines — all alongside header actions.
           </p>
         </Card.Body>
       </Card>
@@ -999,6 +1034,9 @@ export const WithTitleMedia = () => (
           />
         </Card.Media>
         <Card.Header>
+          <Card.HeaderMedia>
+            <IconIndicator kind="succeeded" size={16} label="Succeeded" />
+          </Card.HeaderMedia>
           <Card.TitleMedia>
             <img
               src={rebusClassic}
@@ -1095,11 +1133,7 @@ export const WithTitleLeadingIcon = () => (
     <Column lg={4} md={4} sm={4}>
       <Card>
         <Card.Header>
-          <Card.Title
-            titleStart={<BeeIcon size={16} />}
-            truncate={2}
-            maxWidth="200px"
-          >
+          <Card.Title titleStart={<BeeIcon size={16} />} truncate={2}>
             Example of long title text that wraps onto two lines
           </Card.Title>
         </Card.Header>
@@ -1155,11 +1189,7 @@ export const WithTitleTrailingIcon = () => (
     <Column lg={4} md={4} sm={4}>
       <Card>
         <Card.Header>
-          <Card.Title
-            titleEnd={<BeeIcon size={16} />}
-            truncate={2}
-            maxWidth="200px"
-          >
+          <Card.Title titleEnd={<BeeIcon size={16} />} truncate={2}>
             Example of long title text that wraps into three lines with icon
           </Card.Title>
         </Card.Header>
