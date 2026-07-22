@@ -5,12 +5,21 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import React, { forwardRef, Children, isValidElement, ReactNode } from 'react';
+import React, {
+  forwardRef,
+  Children,
+  isValidElement,
+  ReactNode,
+  useMemo,
+  useCallback,
+} from 'react';
 import PropTypes from 'prop-types';
 import cx from 'classnames';
 import { CardHeaderProps } from './Card.types';
 import { useCardContext } from './CardContext';
 import { pkg } from '../../../settings';
+import { CardTitleMedia } from './CardTitleMedia';
+import { CardMedia } from './CardMedia';
 
 const componentName = 'CardHeader';
 const blockClass = `${pkg.prefix}--card-next__header`;
@@ -23,40 +32,41 @@ export const CardHeader = forwardRef<HTMLDivElement, CardHeaderProps>(
     const context = useCardContext();
     const cardBlockClass = `${pkg.prefix}--card-next`;
 
-    // Check if children contain CardTitleMedia using displayName
-    // This follows the pattern used in SidePanel, Tearsheet, and other components
-    const childrenArray = Children.toArray(children);
+    // Single memoised pass — buckets children by type using direct references.
+    // Replaces the previous two-pass pattern (toArray+some then forEach).
+    const { titleMediaElements, mediaElements, otherContent, hasTitleMedia } =
+      useMemo(() => {
+        const titleMedia: ReactNode[] = [];
+        const media: ReactNode[] = [];
+        const other: ReactNode[] = [];
 
-    const hasTitleMedia = childrenArray.some((child) => {
-      return (
-        isValidElement(child) &&
-        child.type?.['displayName'] === 'Card.TitleMedia'
-      );
-    });
+        Children.forEach(children, (child) => {
+          if (isValidElement(child) && child.type === CardTitleMedia) {
+            titleMedia.push(child);
+          } else if (isValidElement(child) && child.type === CardMedia) {
+            media.push(child);
+          } else {
+            other.push(child);
+          }
+        });
 
-    // Separate CardTitleMedia, CardMedia, and other content
-    const titleMediaElements: ReactNode[] = [];
-    const mediaElements: ReactNode[] = [];
-    const otherContent: ReactNode[] = [];
+        return {
+          titleMediaElements: titleMedia,
+          mediaElements: media,
+          otherContent: other,
+          hasTitleMedia: titleMedia.length > 0,
+        };
+      }, [children]);
 
-    if (hasTitleMedia) {
-      Children.forEach(children, (child) => {
-        if (
-          isValidElement(child) &&
-          child.type?.['displayName'] === 'Card.TitleMedia'
-        ) {
-          titleMediaElements.push(child);
-        } else if (
-          isValidElement(child) &&
-          child.type?.['displayName'] === 'Card.Media'
-        ) {
-          // When TitleMedia is present, CardMedia should be outside __title-content
-          mediaElements.push(child);
-        } else {
-          otherContent.push(child);
-        }
-      });
-    }
+    const handleDecoratorClick = useCallback(
+      (e: React.MouseEvent) => e.stopPropagation(),
+      []
+    );
+
+    const handleDecoratorKeyDown = useCallback(
+      (e: React.KeyboardEvent) => e.stopPropagation(),
+      []
+    );
 
     const headerClasses = cx(blockClass, className);
 
@@ -79,14 +89,8 @@ export const CardHeader = forwardRef<HTMLDivElement, CardHeaderProps>(
           <div
             className={`${cardBlockClass}__decorator`}
             role="presentation"
-            onClick={(e) => {
-              // Stop propagation to prevent card click when clicking AILabel
-              e.stopPropagation();
-            }}
-            onKeyDown={(e) => {
-              // Stop propagation for keyboard events too
-              e.stopPropagation();
-            }}
+            onClick={handleDecoratorClick}
+            onKeyDown={handleDecoratorKeyDown}
           >
             {context.decorator}
           </div>

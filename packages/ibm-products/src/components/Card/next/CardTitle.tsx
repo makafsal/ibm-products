@@ -54,6 +54,30 @@ export interface CardTitleProps {
    * - Expressive density: 24px icon recommended
    */
   titleEnd?: ReactNode;
+
+  /**
+   * Optional label rendered above the title text.
+   * Uses $label-01 typography and $text-secondary color.
+   */
+  label?: ReactNode;
+
+  /**
+   * Enable truncation on the label.
+   * @default false
+   */
+  labelTruncate?: boolean;
+
+  /**
+   * Optional description rendered below the title text.
+   * Uses $label-01 typography and $text-secondary color.
+   */
+  description?: ReactNode;
+
+  /**
+   * Enable truncation on the description.
+   * @default false
+   */
+  descriptionTruncate?: boolean;
 }
 
 /**
@@ -70,6 +94,10 @@ export const CardTitle = ({
   maxWidth = '640px',
   titleStart,
   titleEnd,
+  label,
+  labelTruncate = false,
+  description,
+  descriptionTruncate = false,
   ...rest
 }: CardTitleProps) => {
   const classes = cx(
@@ -98,12 +126,30 @@ export const CardTitle = ({
       style={style}
       {...getDevtoolsProps(componentName)}
     >
+      {label && (
+        <div
+          className={cx(`${blockClass}__label`, {
+            [`${blockClass}__label--truncate`]: labelTruncate,
+          })}
+        >
+          {label}
+        </div>
+      )}
       {titleStart && (
         <span className={`${blockClass}__title-start-icon`}>{titleStart}</span>
       )}
       {children}
       {titleEnd && (
         <span className={`${blockClass}__title-end-icon`}>{titleEnd}</span>
+      )}
+      {description && (
+        <div
+          className={cx(`${blockClass}__description`, {
+            [`${blockClass}__description--truncate`]: descriptionTruncate,
+          })}
+        >
+          {description}
+        </div>
       )}
     </div>
   );
@@ -119,6 +165,26 @@ CardTitle.propTypes = {
    * Provide an optional class to be applied to the containing node.
    */
   className: PropTypes.string,
+
+  /**
+   * Optional description rendered below the title text.
+   */
+  description: PropTypes.node,
+
+  /**
+   * Enable truncation on the description.
+   */
+  descriptionTruncate: PropTypes.bool,
+
+  /**
+   * Optional label rendered above the title text.
+   */
+  label: PropTypes.node,
+
+  /**
+   * Enable truncation on the label.
+   */
+  labelTruncate: PropTypes.bool,
 
   /**
    * Maximum width for the title.

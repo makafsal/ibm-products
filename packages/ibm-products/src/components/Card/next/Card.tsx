@@ -21,10 +21,8 @@ import { CardFooter } from './CardFooter';
 // Import header primitive components
 import { CardHeaderMedia } from './CardHeaderMedia';
 import { CardMedia } from './CardMedia';
-import { CardLabel } from './CardLabel';
 import { CardTitle } from './CardTitle';
 import { CardTitleMedia } from './CardTitleMedia';
-import { CardCaption } from './CardCaption';
 import { CardActions } from './CardActions';
 import { CardAction } from './CardAction';
 
@@ -230,17 +228,11 @@ HeaderMedia.displayName = 'Card.HeaderMedia';
 const Media = CardMedia;
 Media.displayName = 'Card.Media';
 
-const Label = CardLabel;
-Label.displayName = 'Card.Label';
-
 const Title = CardTitle;
 Title.displayName = 'Card.Title';
 
 const TitleMedia = CardTitleMedia;
 TitleMedia.displayName = 'Card.TitleMedia';
-
-const Caption = CardCaption;
-Caption.displayName = 'Card.Caption';
 
 const Actions = CardActions;
 Actions.displayName = 'Card.Actions';
@@ -255,10 +247,8 @@ export const Card = Object.assign(CardComponent, {
   Footer,
   HeaderMedia,
   Media,
-  Label,
   Title,
   TitleMedia,
-  Caption,
   Actions,
   Action,
 });
@@ -270,10 +260,8 @@ export {
   CardFooter,
   CardHeaderMedia,
   CardMedia,
-  CardLabel,
   CardTitle,
   CardTitleMedia,
-  CardCaption,
   CardActions,
   CardAction,
 };
@@ -288,9 +276,7 @@ export type {
 // Export primitive component prop types
 export type { CardHeaderMediaProps } from './CardHeaderMedia';
 export type { CardMediaProps } from './CardMedia';
-export type { CardLabelProps } from './CardLabel';
 export type { CardTitleProps } from './CardTitle';
 export type { CardTitleMediaProps } from './CardTitleMedia';
-export type { CardCaptionProps } from './CardCaption';
 export type { CardActionsProps } from './CardActions';
 export type { CardActionProps } from './CardAction';

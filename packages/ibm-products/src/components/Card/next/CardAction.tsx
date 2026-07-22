@@ -26,6 +26,13 @@ export interface CardActionProps {
    * Provide an optional class to be applied to the containing node.
    */
   className?: string;
+
+  /**
+   * Label shown in the overflow menu when this action is hidden.
+   * If not provided, CardActions will attempt to read it from the
+   * direct child's props (label, iconDescription, or children text).
+   */
+  label?: string;
 }
 
 /**
@@ -62,6 +69,11 @@ CardAction.propTypes = {
    * Provide an optional class to be applied to the containing node.
    */
   className: PropTypes.string,
+
+  /**
+   * Label shown in the overflow menu when this action is hidden.
+   */
+  label: PropTypes.string,
 };
 
 CardAction.displayName = componentName;
