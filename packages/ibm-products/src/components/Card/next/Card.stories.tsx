@@ -554,7 +554,7 @@ export const WithHeaderActions = () => (
             labelTruncate
             description="This is a lengthy description that will be clamped to exactly two lines using multi-line truncation so you can see how it interacts with the action buttons above"
             descriptionTruncate
-            truncate={2}
+            titleTruncate={2}
           >
             This is a very long card title that wraps across multiple lines in a
             narrow container
@@ -717,7 +717,10 @@ export const WithTruncatedTitle = () => (
     <Column lg={4} md={4} sm={4}>
       <Card>
         <Card.Header>
-          <Card.Title truncate description="Single-line truncation example">
+          <Card.Title
+            titleTruncate
+            description="Single-line truncation example"
+          >
             This is a very long title that will be truncated with an ellipsis
             when it exceeds the maximum width
           </Card.Title>
@@ -742,7 +745,10 @@ export const WithTruncatedTitle = () => (
     <Column lg={4} md={4} sm={4}>
       <Card>
         <Card.Header>
-          <Card.Title truncate={3} description="Multi-line truncation example">
+          <Card.Title
+            titleTruncate={3}
+            description="Multi-line truncation example"
+          >
             This is a very long title that will be truncated after three lines.
             It demonstrates the multi-line truncation feature using WebKit line
             clamp. Any content beyond three lines will be hidden with an
@@ -1133,7 +1139,7 @@ export const WithTitleLeadingIcon = () => (
     <Column lg={4} md={4} sm={4}>
       <Card>
         <Card.Header>
-          <Card.Title titleStart={<BeeIcon size={16} />} truncate={2}>
+          <Card.Title titleStart={<BeeIcon size={16} />} titleTruncate={2}>
             Example of long title text that wraps onto two lines
           </Card.Title>
         </Card.Header>
@@ -1189,7 +1195,7 @@ export const WithTitleTrailingIcon = () => (
     <Column lg={4} md={4} sm={4}>
       <Card>
         <Card.Header>
-          <Card.Title titleEnd={<BeeIcon size={16} />} truncate={2}>
+          <Card.Title titleEnd={<BeeIcon size={16} />} titleTruncate={2}>
             Example of long title text that wraps into three lines with icon
           </Card.Title>
         </Card.Header>

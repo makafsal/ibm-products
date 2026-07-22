@@ -213,16 +213,30 @@ $block-class-next: #{c4p-settings.$pkg-prefix}--card-next;
 
 // __label nested inside __title (via label prop on CardTitle).
 // __title owns the horizontal margins; __label carries only typography + color.
+// Truncation modifiers are standalone rules — &--modifier inside a descendant
+// combinator block compiles to `.parent > .element--modifier` which only
+// matches the sole modifier class, not the element with base + modifier.
+// Standalone rules match both classes correctly.
 .#{$block-class-next}__title > .#{$block-class-next}__label {
   @include type-style('label-01');
 
   color: $text-secondary;
+}
 
-  &--truncate {
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
+.#{$block-class-next}__label--truncate {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.#{$block-class-next}__label--truncate-multi {
+  display: -webkit-box;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: var(
+    --#{c4p-settings.$pkg-prefix}--card-next--label-line-clamp
+  );
+  text-overflow: ellipsis;
 }
 
 // Title styles
@@ -235,8 +249,16 @@ $block-class-next: #{c4p-settings.$pkg-prefix}--card-next;
   gap: $spacing-01; // 2px between label / text / description
   margin-inline: $spacing-05; // 16px left and right
 
+  // Truncation modifiers override display:flex — flex containers ignore
+  // white-space:nowrap and -webkit-line-clamp on themselves.
+  // Dynamic values are read from CSS custom properties set by the component.
   &--truncate {
+    display: block;
     overflow: hidden;
+    max-inline-size: var(
+      --#{c4p-settings.$pkg-prefix}--card-next--title-max-width,
+      100%
+    );
     text-overflow: ellipsis;
     white-space: nowrap;
   }
@@ -245,6 +267,13 @@ $block-class-next: #{c4p-settings.$pkg-prefix}--card-next;
     display: -webkit-box;
     overflow: hidden;
     -webkit-box-orient: vertical;
+    -webkit-line-clamp: var(
+      --#{c4p-settings.$pkg-prefix}--card-next--title-line-clamp
+    );
+    max-inline-size: var(
+      --#{c4p-settings.$pkg-prefix}--card-next--title-max-width,
+      100%
+    );
     text-overflow: ellipsis;
   }
 }
@@ -319,16 +348,27 @@ $block-class-next: #{c4p-settings.$pkg-prefix}--card-next;
 // __description nested inside __title (via description prop on CardTitle).
 // __title owns the horizontal margins; __description carries only typography + color.
 // No block margins — the parent flex gap provides the 2px separation from the title text.
+// Truncation modifiers are standalone — see note above __label for why.
 .#{$block-class-next}__title > .#{$block-class-next}__description {
   @include type-style('label-01');
 
   color: $text-secondary;
+}
 
-  &--truncate {
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
+.#{$block-class-next}__description--truncate {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.#{$block-class-next}__description--truncate-multi {
+  display: -webkit-box;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: var(
+    --#{c4p-settings.$pkg-prefix}--card-next--description-line-clamp
+  );
+  text-overflow: ellipsis;
 }
 
 // Actions container styles

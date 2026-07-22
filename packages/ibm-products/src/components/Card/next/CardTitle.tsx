@@ -31,11 +31,11 @@ export interface CardTitleProps {
    * - `number`: Multi-line truncation (line clamp)
    * @default false
    */
-  truncate?: boolean | number;
+  titleTruncate?: boolean | number;
 
   /**
    * Maximum width for the title.
-   * @default '640px'
+   * @default '50%'
    */
   maxWidth?: string;
 
@@ -62,10 +62,12 @@ export interface CardTitleProps {
   label?: ReactNode;
 
   /**
-   * Enable truncation on the label.
+   * Enable truncation on the label text.
+   * - `true`: Single line truncation
+   * - `number`: Multi-line truncation (line clamp)
    * @default false
    */
-  labelTruncate?: boolean;
+  labelTruncate?: boolean | number;
 
   /**
    * Optional description rendered below the title text.
@@ -74,10 +76,12 @@ export interface CardTitleProps {
   description?: ReactNode;
 
   /**
-   * Enable truncation on the description.
+   * Enable truncation on the description text.
+   * - `true`: Single line truncation
+   * - `number`: Multi-line truncation (line clamp)
    * @default false
    */
-  descriptionTruncate?: boolean;
+  descriptionTruncate?: boolean | number;
 }
 
 /**
@@ -90,7 +94,7 @@ export interface CardTitleProps {
 export const CardTitle = ({
   children,
   className,
-  truncate = false,
+  titleTruncate = false,
   maxWidth = '640px',
   titleStart,
   titleEnd,
@@ -100,37 +104,56 @@ export const CardTitle = ({
   descriptionTruncate = false,
   ...rest
 }: CardTitleProps) => {
+  const isTitleMulti = typeof titleTruncate === 'number';
+  const isLabelMulti = typeof labelTruncate === 'number';
+  const isDescMulti = typeof descriptionTruncate === 'number';
+
   const classes = cx(
     `${blockClass}__title`,
     {
-      [`${blockClass}__title--truncate`]: truncate === true,
-      [`${blockClass}__title--truncate-multi`]: typeof truncate === 'number',
+      [`${blockClass}__title--truncate`]: titleTruncate === true,
+      [`${blockClass}__title--truncate-multi`]: isTitleMulti,
       [`${blockClass}__title--with-start-icon`]: titleStart,
       [`${blockClass}__title--with-end-icon`]: titleEnd,
     },
     className
   );
 
-  const style =
-    typeof truncate === 'number'
+  // Dynamic values (line-clamp count, max-width) are passed as CSS custom
+  // properties so the SCSS rules can read them via var(). This avoids inline
+  // style values entirely — presentation stays in CSS where it belongs.
+  const titleVars =
+    titleTruncate !== false
       ? {
-          WebkitLineClamp: truncate,
-          maxWidth,
+          [`--${blockClass}--title-max-width`]: maxWidth,
+          ...(isTitleMulti && {
+            [`--${blockClass}--title-line-clamp`]: titleTruncate,
+          }),
         }
-      : { maxWidth };
+      : undefined;
+
+  const labelVars = isLabelMulti
+    ? { [`--${blockClass}--label-line-clamp`]: labelTruncate }
+    : undefined;
+
+  const descVars = isDescMulti
+    ? { [`--${blockClass}--description-line-clamp`]: descriptionTruncate }
+    : undefined;
 
   return (
     <div
       {...rest}
       className={classes}
-      style={style}
+      style={titleVars as React.CSSProperties}
       {...getDevtoolsProps(componentName)}
     >
       {label && (
         <div
           className={cx(`${blockClass}__label`, {
-            [`${blockClass}__label--truncate`]: labelTruncate,
+            [`${blockClass}__label--truncate`]: labelTruncate === true,
+            [`${blockClass}__label--truncate-multi`]: isLabelMulti,
           })}
+          style={labelVars as React.CSSProperties}
         >
           {label}
         </div>
@@ -145,8 +168,11 @@ export const CardTitle = ({
       {description && (
         <div
           className={cx(`${blockClass}__description`, {
-            [`${blockClass}__description--truncate`]: descriptionTruncate,
+            [`${blockClass}__description--truncate`]:
+              descriptionTruncate === true,
+            [`${blockClass}__description--truncate-multi`]: isDescMulti,
           })}
+          style={descVars as React.CSSProperties}
         >
           {description}
         </div>
@@ -172,9 +198,11 @@ CardTitle.propTypes = {
   description: PropTypes.node,
 
   /**
-   * Enable truncation on the description.
+   * Enable truncation on the description text.
+   * - `true`: Single line truncation
+   * - `number`: Multi-line truncation (line clamp)
    */
-  descriptionTruncate: PropTypes.bool,
+  descriptionTruncate: PropTypes.oneOfType([PropTypes.bool, PropTypes.number]),
 
   /**
    * Optional label rendered above the title text.
@@ -182,12 +210,14 @@ CardTitle.propTypes = {
   label: PropTypes.node,
 
   /**
-   * Enable truncation on the label.
+   * Enable truncation on the label text.
+   * - `true`: Single line truncation
+   * - `number`: Multi-line truncation (line clamp)
    */
-  labelTruncate: PropTypes.bool,
+  labelTruncate: PropTypes.oneOfType([PropTypes.bool, PropTypes.number]),
 
   /**
-   * Maximum width for the title.
+   * Maximum width for the title when truncation is active.
    */
   maxWidth: PropTypes.string,
 
@@ -203,8 +233,10 @@ CardTitle.propTypes = {
 
   /**
    * Enable text truncation with ellipsis.
+   * - `true`: Single line truncation
+   * - `number`: Multi-line truncation (line clamp)
    */
-  truncate: PropTypes.oneOfType([PropTypes.bool, PropTypes.number]),
+  titleTruncate: PropTypes.oneOfType([PropTypes.bool, PropTypes.number]),
 };
 
 CardTitle.displayName = componentName;
