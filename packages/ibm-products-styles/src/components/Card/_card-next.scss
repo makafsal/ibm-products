@@ -239,43 +239,46 @@ $block-class-next: #{c4p-settings.$pkg-prefix}--card-next;
   text-overflow: ellipsis;
 }
 
-// Title styles
+// Title container — always a flex column so label / text-row / description stack.
+// Never set display on this element: truncation lives on __title-text-row below.
 .#{$block-class-next}__title {
-  // Flex column so the parent gap token controls spacing between
-  // the optional __label, the title text, and the optional __description.
   display: flex;
   flex-direction: column;
   color: $text-primary;
-  gap: $spacing-01; // 2px between label / text / description
+  gap: $spacing-01; // 2px between label / text-row / description
   margin-inline: $spacing-05; // 16px left and right
+}
 
-  // Truncation modifiers override display:flex — flex containers ignore
-  // white-space:nowrap and -webkit-line-clamp on themselves.
-  // Dynamic values are read from CSS custom properties set by the component.
-  &--truncate {
-    display: block;
-    overflow: hidden;
-    max-inline-size: var(
-      --#{c4p-settings.$pkg-prefix}--card-next--title-max-width,
-      100%
-    );
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
+// Title text row — wraps the leading icon, title text, and trailing icon.
+// Truncation modifiers live here so they only clip the text row and never
+// affect the flex column that keeps description visible below.
+.#{$block-class-next}__title-text-row {
+  // Default: inline so bare text nodes wrap naturally.
+  display: block;
+}
 
-  &--truncate-multi {
-    display: -webkit-box;
-    overflow: hidden;
-    -webkit-box-orient: vertical;
-    -webkit-line-clamp: var(
-      --#{c4p-settings.$pkg-prefix}--card-next--title-line-clamp
-    );
-    max-inline-size: var(
-      --#{c4p-settings.$pkg-prefix}--card-next--title-max-width,
-      100%
-    );
-    text-overflow: ellipsis;
-  }
+.#{$block-class-next}__title-text-row--truncate {
+  overflow: hidden;
+  max-inline-size: var(
+    --#{c4p-settings.$pkg-prefix}--card-next--title-max-width,
+    100%
+  );
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.#{$block-class-next}__title-text-row--truncate-multi {
+  display: -webkit-box;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: var(
+    --#{c4p-settings.$pkg-prefix}--card-next--title-line-clamp
+  );
+  max-inline-size: var(
+    --#{c4p-settings.$pkg-prefix}--card-next--title-max-width,
+    100%
+  );
+  text-overflow: ellipsis;
 }
 
 // CardTitleMedia — inline icon, left column of the title row.
@@ -299,27 +302,26 @@ $block-class-next: #{c4p-settings.$pkg-prefix}--card-next;
   margin-inline-start: 0; // left margin is provided by the gap from __title-media
 }
 
-// Expressive density uses larger heading
-.#{$block-class-next}--expressive .#{$block-class-next}__title {
+// Expressive density uses larger heading — applied to the text row so only the
+// title text itself inherits the type style, not the label or description.
+.#{$block-class-next}--expressive .#{$block-class-next}__title-text-row {
   @include type-style('heading-03');
 }
 
 // Productive density uses compact heading (must come after expressive to override)
-.#{$block-class-next}--productive .#{$block-class-next}__title {
+.#{$block-class-next}--productive .#{$block-class-next}__title-text-row {
   @include type-style('heading-compact-02');
 }
 
-// Title with leading icon layout
-.#{$block-class-next}__title--with-start-icon {
+// Leading icon: flex row so icon and text sit side-by-side on the same line.
+.#{$block-class-next}__title-text-row--with-start-icon {
   display: flex;
   align-items: flex-start;
   gap: $spacing-03; // 8px between icon and text per design
 }
 
-// Title with trailing icon - no flex, icon flows inline with text
-.#{$block-class-next}__title--with-end-icon {
-  // No display: flex - let content flow naturally inline
-  // Ensure inline content can flow
+// Trailing icon - no override needed; icon span is inline-flex inside block text.
+.#{$block-class-next}__title-text-row--with-end-icon {
   display: block;
 }
 
@@ -327,7 +329,7 @@ $block-class-next: #{c4p-settings.$pkg-prefix}--card-next;
 .#{$block-class-next}__title-start-icon {
   display: flex;
   flex-shrink: 0; // Prevent icon from shrinking
-  margin-block: $spacing-01; // 2px top/bottom padding to center with first line of text
+  margin-block-start: $spacing-01; // 2px top/bottom padding to center with first line of text
 }
 
 // Title trailing icon wrapper - inline element that flows with text

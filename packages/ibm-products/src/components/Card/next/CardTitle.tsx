@@ -112,16 +112,17 @@ export const CardTitle = forwardRef<HTMLDivElement, CardTitleProps>(
     const isLabelMulti = typeof labelTruncate === 'number';
     const isDescMulti = typeof descriptionTruncate === 'number';
 
-    const classes = cx(
-      `${blockClass}__title`,
-      {
-        [`${blockClass}__title--truncate`]: titleTruncate === true,
-        [`${blockClass}__title--truncate-multi`]: isTitleMulti,
-        [`${blockClass}__title--with-start-icon`]: titleStart,
-        [`${blockClass}__title--with-end-icon`]: titleEnd,
-      },
-      className
-    );
+    const containerClasses = cx(`${blockClass}__title`, className);
+
+    // Truncation and icon-row classes live on the inner text-row span so they
+    // never override the outer container's display:flex flex-direction:column,
+    // which is required to keep label / title-row / description stacked.
+    const textRowClasses = cx(`${blockClass}__title-text-row`, {
+      [`${blockClass}__title-text-row--truncate`]: titleTruncate === true,
+      [`${blockClass}__title-text-row--truncate-multi`]: isTitleMulti,
+      [`${blockClass}__title-text-row--with-start-icon`]: titleStart,
+      [`${blockClass}__title-text-row--with-end-icon`]: titleEnd,
+    });
 
     // Dynamic values (line-clamp count, max-width) are passed as CSS custom
     // properties so the SCSS rules can read them via var(). This avoids inline
@@ -148,8 +149,7 @@ export const CardTitle = forwardRef<HTMLDivElement, CardTitleProps>(
       <div
         {...rest}
         ref={ref}
-        className={classes}
-        style={titleVars as React.CSSProperties}
+        className={containerClasses}
         {...getDevtoolsProps(componentName)}
       >
         {label && (
@@ -163,15 +163,22 @@ export const CardTitle = forwardRef<HTMLDivElement, CardTitleProps>(
             {label}
           </div>
         )}
-        {titleStart && (
-          <span className={`${blockClass}__title-start-icon`}>
-            {titleStart}
-          </span>
-        )}
-        {children}
-        {titleEnd && (
-          <span className={`${blockClass}__title-end-icon`}>{titleEnd}</span>
-        )}
+        {/* Title text row: icon + text + end-icon in one flex row.
+            Truncation is applied here so description remains visible below. */}
+        <span
+          className={textRowClasses}
+          style={titleVars as React.CSSProperties}
+        >
+          {titleStart && (
+            <span className={`${blockClass}__title-start-icon`}>
+              {titleStart}
+            </span>
+          )}
+          {children}
+          {titleEnd && (
+            <span className={`${blockClass}__title-end-icon`}>{titleEnd}</span>
+          )}
+        </span>
         {description && (
           <div
             className={cx(`${blockClass}__description`, {
