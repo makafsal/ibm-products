@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import React, { ReactNode } from 'react';
+import React, { forwardRef, ReactNode } from 'react';
 import PropTypes from 'prop-types';
 import cx from 'classnames';
 import { getDevtoolsProps } from '../../../global/js/utils/devtools';
@@ -35,7 +35,7 @@ export interface CardTitleProps {
 
   /**
    * Maximum width for the title.
-   * @default '50%'
+   * @default '100%'
    */
   maxWidth?: string;
 
@@ -91,95 +91,103 @@ export interface CardTitleProps {
  * - Expressive: Use $heading-03 (20px/28px)
  * Color uses $text-primary token.
  */
-export const CardTitle = ({
-  children,
-  className,
-  titleTruncate = false,
-  maxWidth = '640px',
-  titleStart,
-  titleEnd,
-  label,
-  labelTruncate = false,
-  description,
-  descriptionTruncate = false,
-  ...rest
-}: CardTitleProps) => {
-  const isTitleMulti = typeof titleTruncate === 'number';
-  const isLabelMulti = typeof labelTruncate === 'number';
-  const isDescMulti = typeof descriptionTruncate === 'number';
-
-  const classes = cx(
-    `${blockClass}__title`,
+export const CardTitle = forwardRef<HTMLDivElement, CardTitleProps>(
+  (
     {
-      [`${blockClass}__title--truncate`]: titleTruncate === true,
-      [`${blockClass}__title--truncate-multi`]: isTitleMulti,
-      [`${blockClass}__title--with-start-icon`]: titleStart,
-      [`${blockClass}__title--with-end-icon`]: titleEnd,
+      children,
+      className,
+      titleTruncate = false,
+      maxWidth = '100%',
+      titleStart,
+      titleEnd,
+      label,
+      labelTruncate = false,
+      description,
+      descriptionTruncate = false,
+      ...rest
     },
-    className
-  );
+    ref
+  ) => {
+    const isTitleMulti = typeof titleTruncate === 'number';
+    const isLabelMulti = typeof labelTruncate === 'number';
+    const isDescMulti = typeof descriptionTruncate === 'number';
 
-  // Dynamic values (line-clamp count, max-width) are passed as CSS custom
-  // properties so the SCSS rules can read them via var(). This avoids inline
-  // style values entirely — presentation stays in CSS where it belongs.
-  const titleVars =
-    titleTruncate !== false
-      ? {
-          [`--${blockClass}--title-max-width`]: maxWidth,
-          ...(isTitleMulti && {
-            [`--${blockClass}--title-line-clamp`]: titleTruncate,
-          }),
-        }
+    const classes = cx(
+      `${blockClass}__title`,
+      {
+        [`${blockClass}__title--truncate`]: titleTruncate === true,
+        [`${blockClass}__title--truncate-multi`]: isTitleMulti,
+        [`${blockClass}__title--with-start-icon`]: titleStart,
+        [`${blockClass}__title--with-end-icon`]: titleEnd,
+      },
+      className
+    );
+
+    // Dynamic values (line-clamp count, max-width) are passed as CSS custom
+    // properties so the SCSS rules can read them via var(). This avoids inline
+    // style values entirely — presentation stays in CSS where it belongs.
+    const titleVars =
+      titleTruncate !== false
+        ? {
+            [`--${blockClass}--title-max-width`]: maxWidth,
+            ...(isTitleMulti && {
+              [`--${blockClass}--title-line-clamp`]: titleTruncate,
+            }),
+          }
+        : undefined;
+
+    const labelVars = isLabelMulti
+      ? { [`--${blockClass}--label-line-clamp`]: labelTruncate }
       : undefined;
 
-  const labelVars = isLabelMulti
-    ? { [`--${blockClass}--label-line-clamp`]: labelTruncate }
-    : undefined;
+    const descVars = isDescMulti
+      ? { [`--${blockClass}--description-line-clamp`]: descriptionTruncate }
+      : undefined;
 
-  const descVars = isDescMulti
-    ? { [`--${blockClass}--description-line-clamp`]: descriptionTruncate }
-    : undefined;
-
-  return (
-    <div
-      {...rest}
-      className={classes}
-      style={titleVars as React.CSSProperties}
-      {...getDevtoolsProps(componentName)}
-    >
-      {label && (
-        <div
-          className={cx(`${blockClass}__label`, {
-            [`${blockClass}__label--truncate`]: labelTruncate === true,
-            [`${blockClass}__label--truncate-multi`]: isLabelMulti,
-          })}
-          style={labelVars as React.CSSProperties}
-        >
-          {label}
-        </div>
-      )}
-      {titleStart && (
-        <span className={`${blockClass}__title-start-icon`}>{titleStart}</span>
-      )}
-      {children}
-      {titleEnd && (
-        <span className={`${blockClass}__title-end-icon`}>{titleEnd}</span>
-      )}
-      {description && (
-        <div
-          className={cx(`${blockClass}__description`, {
-            [`${blockClass}__description--truncate`]:
-              descriptionTruncate === true,
-            [`${blockClass}__description--truncate-multi`]: isDescMulti,
-          })}
-          style={descVars as React.CSSProperties}
-        >
-          {description}
-        </div>
-      )}
-    </div>
-  );
-};
+    return (
+      <div
+        {...rest}
+        ref={ref}
+        className={classes}
+        style={titleVars as React.CSSProperties}
+        {...getDevtoolsProps(componentName)}
+      >
+        {label && (
+          <div
+            className={cx(`${blockClass}__label`, {
+              [`${blockClass}__label--truncate`]: labelTruncate === true,
+              [`${blockClass}__label--truncate-multi`]: isLabelMulti,
+            })}
+            style={labelVars as React.CSSProperties}
+          >
+            {label}
+          </div>
+        )}
+        {titleStart && (
+          <span className={`${blockClass}__title-start-icon`}>
+            {titleStart}
+          </span>
+        )}
+        {children}
+        {titleEnd && (
+          <span className={`${blockClass}__title-end-icon`}>{titleEnd}</span>
+        )}
+        {description && (
+          <div
+            className={cx(`${blockClass}__description`, {
+              [`${blockClass}__description--truncate`]:
+                descriptionTruncate === true,
+              [`${blockClass}__description--truncate-multi`]: isDescMulti,
+            })}
+            style={descVars as React.CSSProperties}
+          >
+            {description}
+          </div>
+        )}
+      </div>
+    );
+  }
+);
 
 CardTitle.propTypes = {
   /**

@@ -5,7 +5,14 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import React, { ReactNode, useEffect, useRef, useState, Children } from 'react';
+import React, {
+  forwardRef,
+  ReactNode,
+  useEffect,
+  useRef,
+  useState,
+  Children,
+} from 'react';
 import PropTypes from 'prop-types';
 import cx from 'classnames';
 import { OverflowMenu, OverflowMenuItem, FeatureFlags } from '@carbon/react';
@@ -44,100 +51,107 @@ interface ActionItem {
  * Positioned in the top-right corner with 8px gap between actions.
  * When actions exceed 50% of available header space, overflow menu is shown.
  */
-export const CardActions = ({
-  children,
-  className,
-  overflowMenuLabel = 'More actions',
-  ...rest
-}: CardActionsProps) => {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const [hiddenItems, setHiddenItems] = useState<ActionItem[]>([]);
-  const classes = cx(`${blockClass}__actions`, className);
+export const CardActions = forwardRef<HTMLDivElement, CardActionsProps>(
+  (
+    { children, className, overflowMenuLabel = 'More actions', ...rest },
+    ref
+  ) => {
+    const containerRef = useRef<HTMLDivElement>(null);
+    const [hiddenItems, setHiddenItems] = useState<ActionItem[]>([]);
+    const classes = cx(`${blockClass}__actions`, className);
 
-  // Convert children to array of action items with IDs
-  const actionItems: ActionItem[] = [];
-  Children.forEach(children, (child, index) => {
-    if (React.isValidElement(child)) {
-      const id = `action-${index}`;
-      // Try to extract label from IconButton props
-      let label = overflowMenuLabel;
+    // Convert children to array of action items with IDs
+    const actionItems: ActionItem[] = [];
+    Children.forEach(children, (child, index) => {
+      if (React.isValidElement(child)) {
+        const id = `action-${index}`;
+        // Try to extract label from IconButton props
+        let label = overflowMenuLabel;
 
-      const childProps = child.props as any;
-      if (childProps.children && React.isValidElement(childProps.children)) {
-        const iconButton = childProps.children as any;
-        label =
-          iconButton.props?.label ||
-          iconButton.props?.iconDescription ||
-          `Action ${index + 1}`;
+        const childProps = child.props as any;
+        if (childProps.children && React.isValidElement(childProps.children)) {
+          const iconButton = childProps.children as any;
+          label =
+            iconButton.props?.label ||
+            iconButton.props?.iconDescription ||
+            `Action ${index + 1}`;
+        }
+        actionItems.push({ id, element: child, label });
       }
-      actionItems.push({ id, element: child, label });
-    }
-  });
-
-  useEffect(() => {
-    if (!containerRef.current || actionItems.length === 0) {
-      return;
-    }
-
-    const handler = createOverflowHandler({
-      container: containerRef.current,
-      onChange: (_visible, hidden) => {
-        const hiddenIds = hidden.map((el) => el.dataset.id);
-        setHiddenItems(
-          actionItems.filter((item) => hiddenIds.includes(item.id))
-        );
-      },
     });
 
-    return () => handler.disconnect();
-  }, [children]); // eslint-disable-line react-hooks/exhaustive-deps
+    useEffect(() => {
+      if (!containerRef.current || actionItems.length === 0) {
+        return;
+      }
 
-  return (
-    <div
-      ref={containerRef}
-      className={classes}
-      {...rest}
-      {...getDevtoolsProps(componentName)}
-    >
-      {actionItems.map((item) => (
-        <div key={item.id} data-id={item.id}>
-          {item.element}
-        </div>
-      ))}
+      const handler = createOverflowHandler({
+        container: containerRef.current,
+        onChange: (_visible, hidden) => {
+          const hiddenIds = hidden.map((el) => el.dataset.id);
+          setHiddenItems(
+            actionItems.filter((item) => hiddenIds.includes(item.id))
+          );
+        },
+      });
+
+      return () => handler.disconnect();
+    }, [children]); // eslint-disable-line react-hooks/exhaustive-deps
+
+    return (
       <div
-        data-offset
-        data-hidden
-        data-floating-menu-container
-        style={{
-          position: 'relative',
+        ref={(node) => {
+          containerRef.current = node;
+          if (typeof ref === 'function') {
+            ref(node);
+          } else if (ref) {
+            (ref as React.RefObject<HTMLDivElement | null>).current = node;
+          }
         }}
+        className={classes}
+        {...rest}
+        {...getDevtoolsProps(componentName)}
       >
-        <FeatureFlags enableV12Overflowmenu>
-          <OverflowMenu size="sm" aria-label={overflowMenuLabel}>
-            {hiddenItems.map((item) => (
-              <OverflowMenuItem
-                key={item.id}
-                itemText={item.label || 'Action'}
-                onClick={() => {
-                  // Try to trigger the click on the original button
+        {actionItems.map((item) => (
+          <div key={item.id} data-id={item.id}>
+            {item.element}
+          </div>
+        ))}
+        <div
+          data-offset
+          data-hidden
+          data-floating-menu-container
+          style={{
+            position: 'relative',
+          }}
+        >
+          <FeatureFlags enableV12Overflowmenu>
+            <OverflowMenu size="sm" aria-label={overflowMenuLabel}>
+              {hiddenItems.map((item) => (
+                <OverflowMenuItem
+                  key={item.id}
+                  itemText={item.label || 'Action'}
+                  onClick={() => {
+                    // Try to trigger the click on the original button
 
-                  const elementProps = item.element.props as any;
-                  const button = elementProps.children;
-                  if (button && React.isValidElement(button)) {
-                    const buttonProps = button.props as any;
-                    if (buttonProps.onClick) {
-                      buttonProps.onClick();
+                    const elementProps = item.element.props as any;
+                    const button = elementProps.children;
+                    if (button && React.isValidElement(button)) {
+                      const buttonProps = button.props as any;
+                      if (buttonProps.onClick) {
+                        buttonProps.onClick();
+                      }
                     }
-                  }
-                }}
-              />
-            ))}
-          </OverflowMenu>
-        </FeatureFlags>
+                  }}
+                />
+              ))}
+            </OverflowMenu>
+          </FeatureFlags>
+        </div>
       </div>
-    </div>
-  );
-};
+    );
+  }
+);
 
 CardActions.propTypes = {
   /**

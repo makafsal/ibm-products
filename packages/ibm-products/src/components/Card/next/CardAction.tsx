@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import React, { ReactNode } from 'react';
+import React, { forwardRef, ReactNode } from 'react';
 import PropTypes from 'prop-types';
 import cx from 'classnames';
 import { getDevtoolsProps } from '../../../global/js/utils/devtools';
@@ -43,21 +43,20 @@ export interface CardActionProps {
  * Note: do not use CardAction inside a clickable card — clickable cards
  * should not contain interactive elements (see usage guidelines).
  */
-export const CardAction = ({
-  children,
-  className,
-  ...rest
-}: CardActionProps) => {
-  return (
-    <div
-      {...rest}
-      className={cx(`${blockClass}__action`, className)}
-      {...getDevtoolsProps(componentName)}
-    >
-      {children}
-    </div>
-  );
-};
+export const CardAction = forwardRef<HTMLDivElement, CardActionProps>(
+  ({ children, className, ...rest }, ref) => {
+    return (
+      <div
+        {...rest}
+        ref={ref}
+        className={cx(`${blockClass}__action`, className)}
+        {...getDevtoolsProps(componentName)}
+      >
+        {children}
+      </div>
+    );
+  }
+);
 
 CardAction.propTypes = {
   /**
