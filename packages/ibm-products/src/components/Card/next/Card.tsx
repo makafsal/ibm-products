@@ -32,7 +32,7 @@ const blockClass = `${pkg.prefix}--card-next`;
 /**
  * Card component - Root container for composable card
  */
-const CardComponent = forwardRef<HTMLDivElement, CardProps>(
+let CardComponent = forwardRef<HTMLDivElement, CardProps>(
   (
     {
       clickable = false,
@@ -165,8 +165,6 @@ const CardComponent = forwardRef<HTMLDivElement, CardProps>(
   }
 );
 
-CardComponent.displayName = componentName;
-
 CardComponent.propTypes = {
   /**
    * Card content
@@ -205,6 +203,9 @@ CardComponent.propTypes = {
    */
   onKeyDown: PropTypes.func,
 };
+
+CardComponent = pkg.checkComponentEnabled(CardComponent, componentName);
+CardComponent.displayName = componentName;
 
 /**
  * -------

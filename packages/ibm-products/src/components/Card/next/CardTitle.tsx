@@ -91,7 +91,7 @@ export interface CardTitleProps {
  * - Expressive: Use $heading-03 (20px/28px)
  * Color uses $text-primary token.
  */
-export const CardTitle = forwardRef<HTMLDivElement, CardTitleProps>(
+export let CardTitle = forwardRef<HTMLDivElement, CardTitleProps>(
   (
     {
       children,
@@ -254,4 +254,5 @@ CardTitle.propTypes = {
   titleTruncate: PropTypes.oneOfType([PropTypes.bool, PropTypes.number]),
 };
 
+CardTitle = pkg.checkComponentEnabled(CardTitle, componentName);
 CardTitle.displayName = componentName;

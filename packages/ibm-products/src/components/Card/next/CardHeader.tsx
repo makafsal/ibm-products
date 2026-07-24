@@ -24,7 +24,7 @@ const blockClass = `${pkg.prefix}--card-next__header`;
  *     CardTitleMedia is absent — detected by the :has selector in SCSS.
  * No child-scanning or wrapper injection is needed.
  */
-export const CardHeader = forwardRef<HTMLDivElement, CardHeaderProps>(
+export let CardHeader = forwardRef<HTMLDivElement, CardHeaderProps>(
   ({ className, children, ...rest }, ref) => {
     const context = useCardContext();
     const cardBlockClass = `${pkg.prefix}--card-next`;
@@ -57,8 +57,6 @@ export const CardHeader = forwardRef<HTMLDivElement, CardHeaderProps>(
   }
 );
 
-CardHeader.displayName = componentName;
-
 CardHeader.propTypes = {
   /**
    * Header content
@@ -69,3 +67,6 @@ CardHeader.propTypes = {
    */
   className: PropTypes.string,
 };
+
+CardHeader = pkg.checkComponentEnabled(CardHeader, componentName);
+CardHeader.displayName = componentName;

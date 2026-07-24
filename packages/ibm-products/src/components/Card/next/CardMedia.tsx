@@ -42,7 +42,7 @@ export interface CardMediaProps extends Omit<AspectRatioProps, 'className'> {
  * In horizontal mode it renders a plain div sized to `mediaWidth` (default
  * 33.33%) that stretches to the full card height — no aspect-ratio math needed.
  */
-export const CardMedia = forwardRef<HTMLDivElement, CardMediaProps>(
+export let CardMedia = forwardRef<HTMLDivElement, CardMediaProps>(
   ({ children, className, ratio, mediaWidth = '33.33%', ...rest }, ref) => {
     const { horizontal } = useCardContext();
     const classes = cx(`${blockClass}__media`, className);
@@ -85,4 +85,5 @@ CardMedia.propTypes = {
   mediaWidth: PropTypes.string,
 };
 
+CardMedia = pkg.checkComponentEnabled(CardMedia, componentName);
 CardMedia.displayName = componentName;

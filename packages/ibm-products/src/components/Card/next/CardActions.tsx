@@ -51,7 +51,7 @@ interface ActionItem {
  * Positioned in the top-right corner with 8px gap between actions.
  * When actions exceed 50% of available header space, overflow menu is shown.
  */
-export const CardActions = forwardRef<HTMLDivElement, CardActionsProps>(
+export let CardActions = forwardRef<HTMLDivElement, CardActionsProps>(
   (
     { children, className, overflowMenuLabel = 'More actions', ...rest },
     ref
@@ -170,4 +170,5 @@ CardActions.propTypes = {
   overflowMenuLabel: PropTypes.string,
 };
 
+CardActions = pkg.checkComponentEnabled(CardActions, componentName);
 CardActions.displayName = componentName;

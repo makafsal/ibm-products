@@ -43,7 +43,7 @@ export interface CardActionProps {
  * Note: do not use CardAction inside a clickable card — clickable cards
  * should not contain interactive elements (see usage guidelines).
  */
-export const CardAction = forwardRef<HTMLDivElement, CardActionProps>(
+export let CardAction = forwardRef<HTMLDivElement, CardActionProps>(
   ({ children, className, ...rest }, ref) => {
     return (
       <div
@@ -75,4 +75,5 @@ CardAction.propTypes = {
   label: PropTypes.string,
 };
 
+CardAction = pkg.checkComponentEnabled(CardAction, componentName);
 CardAction.displayName = componentName;

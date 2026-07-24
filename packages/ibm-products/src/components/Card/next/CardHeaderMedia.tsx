@@ -26,7 +26,7 @@ export interface CardHeaderMediaProps {
   className?: string;
 }
 
-export const CardHeaderMedia = forwardRef<HTMLDivElement, CardHeaderMediaProps>(
+export let CardHeaderMedia = forwardRef<HTMLDivElement, CardHeaderMediaProps>(
   ({ children, className, ...rest }, ref) => {
     const classes = cx(`${blockClass}__header-media`, className);
 
@@ -55,4 +55,5 @@ CardHeaderMedia.propTypes = {
   className: PropTypes.string,
 };
 
+CardHeaderMedia = pkg.checkComponentEnabled(CardHeaderMedia, componentName);
 CardHeaderMedia.displayName = componentName;
