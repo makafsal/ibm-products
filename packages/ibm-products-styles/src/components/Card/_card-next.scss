@@ -241,12 +241,19 @@ $block-class-next: #{c4p-settings.$pkg-prefix}--card-next;
 
 // Title container — always a flex column so label / text-row / description stack.
 // Never set display on this element: truncation lives on __title-text-row below.
+// min-inline-size: 0 is required because __title is a grid item: grid items
+// default to min-inline-size: auto (i.e. their content width), which means
+// they won't shrink to fit the cell and overflow: hidden on __title-text-row
+// has no effect. Setting 0 allows the grid cell to constrain the item width.
+// overflow: hidden clips any content that still escapes (e.g. unbreakable words).
 .#{$block-class-next}__title {
   display: flex;
+  overflow: hidden;
   flex-direction: column;
   color: $text-primary;
   gap: $spacing-01; // 2px between label / text-row / description
   margin-inline: $spacing-05; // 16px left and right
+  min-inline-size: 0;
 }
 
 // Title text row — wraps the leading icon, title text, and trailing icon.
