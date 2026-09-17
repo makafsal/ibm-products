@@ -1,3 +1,56 @@
+## `@carbon/ibm-products@2.99.0-rc.0`
+### Features :rocket:
+- feat(ConditionBuilder): composability review — value/onChange API and bug fixes (#9817)
+- feat(Tearsheet, PageHeader): support ReactNode for header title with default string truncation (#9832)
+
+### Bug fixes :bug:
+- fix(CreateFullPage): focus first element of visible step on step change (#9878)
+- fix(Tearsheet next): correct Carbon layer hierarchy — body elevated instead of header (#9869)
+- fix(PageHeader): code quality fixes and fullWidthGrid/narrowGrid support (#9833)
+- fix(tagOverflow): remove usePortalTarget hook (#9831)
+
+### Housekeeping :house:
+- chore(deps): update dependency vite [security] (#9844)
+- chore: deprecate status Icon (#9884)
+- build(deps): update to Carbon 11 compatible versions to latest (#9849)
+
+## `@carbon/ibm-products@2.98.0`
+### Bug fixes :bug:
+- fix(pageheader): accessibility fixes (#9819)
+- fix(ConditionBuilder): WCAG 2.1 accessibility audit fixes (JAWS/Firefox, v2.44.0-rc.1) (#9812)
+
+### Housekeeping :house:
+- test(pageheader): unit tests added (#9820)
+
+## `@carbon/ibm-products@2.97.0`
+### Features :rocket:
+- feat(webTerminal): implemented as react pattern (#9723)
+- feat(saving): implemented as react pattern (#9733)
+
+### Bug fixes :bug:
+- fix: tooltip uses popoveralignment (#9790)
+- fix(expressivecard): use reactnode as type for pictogram prop (#9757)
+
+### Housekeeping :house:
+- chore: deprecate create modal and remove modal (#9764)
+- chore: deprecated create side panel (#9791)
+- chore(Card): hide from Storybook (#9771)
+- chore(preview_PageHeader): use `TruncatedText` for title instead of `DefinitionTooltip` (#9742)
+- refactor(addselect): code cleanup and implementation improvements (#9729)
+
+## `@carbon/ibm-products@2.96.0`
+### Features :rocket:
+- feat(Card): implement horizontal card (#9704)
+
+### Bug fixes :bug:
+- fix(preview__Tearsheet): add aria-label for aside elements and fix double render (#9715)
+- fix: add example for tearsheet with steps (#9635)
+
+### Housekeeping :house:
+- chore(deps): update babel/core from 7.26.10 to 7.29.6 (#9737)
+- chore(deps): update dependency typescript-config-carbon to ^0.11.0 (#9754)
+- chore(Card): Review and analyse Card implementation (WIP) (#9738)
+
 ## `@carbon/ibm-products@2.95.0`
 ### Features :rocket:
 - feat(Card): implement card footer and primitives (#9659)

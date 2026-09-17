@@ -1,3 +1,32 @@
+## `@carbon/ibm-products-web-components@0.48.0-rc.0`
+### Bug fixes :bug:
+- fix: bignumber and notificationpanel parity after v12 migration (#9856)
+
+### Housekeeping :house:
+- build(deps): update to Carbon 11 compatible versions to latest (#9849)
+
+## `@carbon/ibm-products-web-components@0.47.0`
+### Features :rocket:
+- feat(addselect): single select patterns (#9776)
+
+## `@carbon/ibm-products-web-components@0.46.0`
+### Features :rocket:
+- feat(preview-tearsheet): implement open in stackblitz in web component (#9760)
+- feat(addselect): web component implementation (#9740)
+
+### Bug fixes :bug:
+- fix(createsidepanel): parity between the react and wc storybook (#9783)
+
+### Housekeeping :house:
+- chore(deps): update dependency @open-wc/testing to v5 (#9801)
+- chore(deps): update dependency c8 to v12 (#9810)
+
+## `@carbon/ibm-products-web-components@0.45.0`
+### Bug fixes :bug:
+- fix(useravatar): remove deprecated align options from wc stories (#9734)
+- fix(Tearsheet): design review changes and fixes in webcomponent (#9731)
+- fix(preview__Tearsheet): add aria-label for aside elements and fix double render (#9715)
+
 ## `@carbon/ibm-products-web-components@0.44.0`
 ### Features :rocket:
 - feat(tearsheet): preview tearsheet code connect integration (#9631)

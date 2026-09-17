@@ -88,7 +88,7 @@ collect:
         - disableColumnSwapping
         - disabled
         - disabledCell
-        - disableHeaderCollapse
+        - disablePortal
         - disableSubmit
         - displayMetalPanel
         - downloadLinkLabel
@@ -197,7 +197,6 @@ collect:
         - itemCount
         - items
         - itemsLabel
-        - keepMounted
         - key
         - kind
         - label
@@ -218,6 +217,7 @@ collect:
         - metadata
         - metaIconDescription
         - metaPanelTitle
+        - modalAriaLabel
         - modifiers
         - multi
         - multiline
@@ -329,6 +329,7 @@ collect:
         - scoreThresholds
         - scrollBarSize
         - scroller
+        - searchLabel
         - searchPlaceholder
         - searchProps
         - searchResultsTitle
@@ -345,7 +346,6 @@ collect:
         - selectAllToggle
         - selected
         - selectedHeaderReorderActive
-        - selectedItems
         - selectedOption
         - selectionAreas
         - selectorPageContent
@@ -378,6 +378,7 @@ collect:
         - slug
         - small
         - sortByLabel
+        - startActive
         - startConditionLabel
         - state
         - statementConfigCustom
@@ -396,6 +397,7 @@ collect:
         - titleEnd
         - titleSize
         - titleStart
+        - titleTruncate
         - toolbarBatchActions
         - toolbarBatchActionsDisplayMin
         - tooltipAlign
@@ -416,7 +418,6 @@ collect:
         - variableRowHeight
         - variant
         - verticalAlign
-        - verticalGap
         - verticalPosition
         - viewAllLabel
         - viewLessLabel
@@ -435,7 +436,6 @@ collect:
         - content
         - copyrightText
         - logo
-        - modalAriaLabel
         - version
         # ActionBar
         - overflowItems
@@ -447,6 +447,7 @@ collect:
         - disableStacking
         # AddSelect
         - onItemSelect
+        - selectedItems
         # AddSelectBody
         - breadcrumbItemProps
         - breadcrumbProps
@@ -464,7 +465,6 @@ collect:
         - header
         - onNavigate
         - onSelectAll
-        - searchLabel
         - selectAllCheckboxProps
         - setPath
         - showSelectAll
@@ -499,6 +499,7 @@ collect:
         - itemPanelIconButtonProps
         - itemPanelIconDescription
         - itemPanelOpen
+        - navIndicatorLabel
         - onItemPanelClick
         - radioButtonProps
         - rowContent
@@ -508,7 +509,7 @@ collect:
         - editIconDescription
         - emptyState
         - onEdit
-        - showCount
+        - selectedItemCount
         - showEditIcon
         # AddSelectSelectionSummaryItem
         - removeButtonLabel
@@ -586,12 +587,17 @@ collect:
         - clickable
         - density
         - getStarted
+        - horizontal
         # CardFooter
         - hasButton
         # CardHeader
         - inClickableCard
         - noActionIcons
+        # CardMedia
+        - mediaWidth
         # CardTitle
+        - descriptionTruncate
+        - labelTruncate
         - maxWidth
         # Carousel
         - disableArrowScroll
@@ -658,6 +664,7 @@ collect:
         - wrapperClassName
         - wrapperProps
         # ConditionBuilderItem
+        - dialogAriaLabel
         - popOverClassName
         - renderChildren
         # ConditionBuilderItemDate
@@ -670,6 +677,9 @@ collect:
         - setRootState
         # ConditionConnector
         - operator
+        # ConditionGroupBuilder
+        - conditionRemovedText
+        - setStatusMessage
         # ConditionPreview
         - colorIndex
         - previewType
@@ -1028,11 +1038,16 @@ collect:
         - width
         # TagOverflow
         - tagComponent
+        # TagOverflowModal
+        - allTags
+        - onTagClose
         # Tearsheet
         - containerClassName
-        - disablePortal
+        - keepMounted
         - summaryContentWidth
+        - verticalGap
         # TearsheetHeader
+        - disableHeaderCollapse
         - onHeaderCollapse
         # TearsheetHeaderActionItem
         - overflowItemLabel
@@ -1049,9 +1064,6 @@ collect:
         - summaryPanelAriaLabel
         - summaryPanelOpen
         - summaryPanelTriggerRef
-        # TearsheetWithSteps
-        - progressIndicator
-        - setOpen
         # Toolbar
         - vertical
         # TruncatedList
@@ -1256,13 +1268,25 @@ collect:
         - top
         # General - tooltipAlignment
         - bottom
+        - bottom-end
         - bottom-left
         - bottom-right
+        - bottom-start
         - left
+        - left-bottom
+        - left-end
+        - left-start
+        - left-top
         - right
+        - right-bottom
+        - right-end
+        - right-start
+        - right-top
         - top
+        - top-end
         - top-left
         - top-right
+        - top-start
         # General - truncateValue
         - end
         - start
@@ -1382,9 +1406,6 @@ collect:
         - lg
         - md
         - sm
-        # TearsheetWithSteps - progressIndicator
-        - horizontal
-        - vertical
   npm:
     dependencies: null
   js:

@@ -8,23 +8,16 @@ import React, {
   type ComponentType,
   type FunctionComponent,
   useEffect,
-  useState,
+  useId,
   useRef,
   RefObject,
 } from 'react';
-import { useIsomorphicEffect } from '../../../global/js/hooks';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
-import {
-  Column,
-  DefinitionTooltip,
-  Grid,
-  unstable_Text as Text,
-  Section,
-  Heading,
-} from '@carbon/react';
+import { Column, Grid, Section, Heading } from '@carbon/react';
 import { blockClass } from '../PageHeaderUtils';
 import { usePageHeader, type PageHeaderObserverState } from './context';
+import { TruncatedText } from '../../TruncatedText';
 
 /**
  * -----------------
@@ -45,13 +38,18 @@ export interface PageHeaderContentProps {
    */
   renderIcon?: ComponentType | FunctionComponent;
   /**
-   * The PageHeaderContent's title
+   * The PageHeaderContent's title. Accepts a string or ReactNode.
+   * If a string is provided, TruncatedText is used with automatic overflow handling.
    */
-  title: string;
+  title: React.ReactNode;
   /**
    * Specify the element or component used to render the title.
    */
   titleAs?: 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6' | typeof Heading;
+  /**
+   * Specify the maximum number of lines the title can span before truncating.
+   */
+  titleTruncate?: number;
   /**
    * The PageHeaderContent's contextual actions
    */
@@ -73,7 +71,8 @@ export const PageHeaderContent = React.forwardRef<
     className,
     children,
     title,
-    titleAs = 'h1',
+    titleAs: TitleTag = 'h1',
+    titleTruncate,
     renderIcon: IconElement,
     contextualActions,
     pageActions,
@@ -83,7 +82,13 @@ export const PageHeaderContent = React.forwardRef<
 ) {
   const contentRef = useRef<HTMLDivElement>(null);
   const componentRef = (ref ?? contentRef) as RefObject<HTMLDivElement>;
-  const { setRefs, setPageActionsInstance } = usePageHeader();
+  const {
+    setRefs,
+    setPageActionsInstance,
+    observerState,
+    fullWidthGrid,
+    narrowGrid,
+  } = usePageHeader();
   const classNames = classnames(
     {
       [`${blockClass}__content`]: true,
@@ -91,6 +96,9 @@ export const PageHeaderContent = React.forwardRef<
     className
   );
   const titleRef = useRef<HTMLHeadingElement>(null);
+  const titleLines = titleTruncate ?? (contextualActions ? 1 : 2);
+  const generatedId = useId();
+  const truncatedTextId = `${blockClass}__content__title__truncatedText-${generatedId}`;
 
   useEffect(() => {
     if (componentRef?.current) {
@@ -108,49 +116,41 @@ export const PageHeaderContent = React.forwardRef<
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pageActions]);
 
-  const [isEllipsisApplied, setIsEllipsisApplied] = useState(false);
-
-  const isEllipsisActive = (element: HTMLHeadingElement) => {
-    setIsEllipsisApplied(element.offsetHeight < element.scrollHeight);
-    return element.offsetHeight < element.scrollHeight;
-  };
-
-  useIsomorphicEffect(() => {
-    titleRef.current && isEllipsisActive(titleRef.current);
-  }, [title]);
-
   return (
     <Section as="div" className={classNames} ref={componentRef} {...other}>
-      <Grid>
+      <Grid fullWidth={!!fullWidthGrid} narrow={narrowGrid}>
         <Column lg={16} md={8} sm={4}>
           <div className={`${blockClass}__content__title-wrapper`}>
             <div className={`${blockClass}__content__start`}>
               <div className={`${blockClass}__content__title-container`}>
                 {IconElement && (
-                  <div className={`${blockClass}__content__icon`}>
+                  <div
+                    className={`${blockClass}__content__icon`}
+                    aria-hidden="true"
+                  >
                     <IconElement />
                   </div>
                 )}
 
-                {isEllipsisApplied ? (
-                  <DefinitionTooltip definition={title}>
-                    <Text
-                      ref={titleRef}
-                      as={titleAs}
-                      className={`${blockClass}__content__title`}
-                    >
+                <TitleTag
+                  ref={titleRef}
+                  className={`${blockClass}__content__title`}
+                >
+                  {typeof title === 'string' ? (
+                    <TruncatedText
+                      id={`${blockClass}__content__title__truncatedText`}
+                      className={`${blockClass}__content__title-text`}
+                      align="bottom"
+                      value={title}
+                      lines={titleLines}
+                      type="tooltip"
+                    />
+                  ) : (
+                    <span className={`${blockClass}__content__title-text`}>
                       {title}
-                    </Text>
-                  </DefinitionTooltip>
-                ) : (
-                  <Text
-                    ref={titleRef}
-                    as={titleAs}
-                    className={`${blockClass}__content__title`}
-                  >
-                    {title}
-                  </Text>
-                )}
+                    </span>
+                  )}
+                </TitleTag>
               </div>
               {contextualActions && (
                 <div className={`${blockClass}__content__contextual-actions`}>
@@ -159,11 +159,7 @@ export const PageHeaderContent = React.forwardRef<
               )}
             </div>
             {typeof pageActions === 'function'
-              ? pageActions({
-                  fullyCollapsed: false,
-                  titleClipped: false,
-                  contentActionsClipped: false,
-                })
+              ? pageActions(observerState)
               : pageActions}
           </div>
           {children}
@@ -197,13 +193,9 @@ PageHeaderContent.propTypes = {
    */
   renderIcon: PropTypes.oneOfType([PropTypes.func, PropTypes.object]),
   /**
-   * The PageHeaderContent's subtitle
-   */
-  subtitle: PropTypes.string,
-  /**
    * The PageHeaderContent's title
    */
-  title: PropTypes.string.isRequired,
+  title: PropTypes.node.isRequired,
   /**
    * Specify the element or component used to render the title.
    */
@@ -211,4 +203,8 @@ PageHeaderContent.propTypes = {
     PropTypes.oneOf(['h1', 'h2', 'h3', 'h4', 'h5', 'h6']),
     PropTypes.elementType,
   ]),
+  /**
+   * Specify the maximum number of lines the title can span before truncating.
+   */
+  titleTruncate: PropTypes.number,
 };

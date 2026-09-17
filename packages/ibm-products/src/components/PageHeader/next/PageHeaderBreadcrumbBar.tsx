@@ -77,7 +77,12 @@ export const PageHeaderBreadcrumbBar = React.forwardRef<
   ref
 ) {
   const context = usePageHeader();
-  const { pageActionsInstance: globalActions, observerState } = context;
+  const {
+    pageActionsInstance: globalActions,
+    observerState,
+    fullWidthGrid,
+    narrowGrid,
+  } = context;
   const classNames = classnames(
     {
       [`${blockClass}__breadcrumb-bar`]: true,
@@ -106,31 +111,36 @@ export const PageHeaderBreadcrumbBar = React.forwardRef<
       }}
     >
       <div className={classNames} ref={ref} {...other}>
-        <Grid>
+        <Grid fullWidth={!!fullWidthGrid} narrow={narrowGrid}>
           <Column lg={16} md={8} sm={4}>
             <div className={`${blockClass}__breadcrumb-container`}>
               <div className={`${blockClass}__breadcrumb-wrapper`}>
                 {IconElement && (
-                  <div className={`${blockClass}__breadcrumb__icon`}>
+                  <div
+                    className={`${blockClass}__breadcrumb__icon`}
+                    aria-hidden="true"
+                  >
                     <IconElement />
                   </div>
                 )}
                 {children}
               </div>
-              <div
-                className={`${blockClass}__breadcrumb__actions`}
-                role="navigation"
-                aria-label={actionsAriaLabel}
-              >
-                <div className={contentActionsClasses}>
-                  {typeof contentActions === 'function'
-                    ? contentActions(observerState)
-                    : contentActions}
+              {(contentActions || pageActions) && (
+                <div
+                  className={`${blockClass}__breadcrumb__actions`}
+                  role="toolbar"
+                  aria-label={actionsAriaLabel}
+                >
+                  <div className={contentActionsClasses}>
+                    {typeof contentActions === 'function'
+                      ? contentActions(observerState)
+                      : contentActions}
+                  </div>
+                  {typeof pageActions === 'function'
+                    ? pageActions(observerState)
+                    : pageActions}
                 </div>
-                {typeof pageActions === 'function'
-                  ? pageActions(observerState)
-                  : pageActions}
-              </div>
+              )}
             </div>
           </Column>
         </Grid>

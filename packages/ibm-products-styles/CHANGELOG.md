@@ -1,3 +1,35 @@
+## `@carbon/ibm-products-styles@2.95.0-rc.0`
+### Features :rocket:
+- feat(Tearsheet, PageHeader): support ReactNode for header title with default string truncation (#9832)
+
+### Bug fixes :bug:
+- fix(Tearsheet next): correct Carbon layer hierarchy — body elevated instead of header (#9869)
+- fix(PageHeader): code quality fixes and fullWidthGrid/narrowGrid support (#9833)
+
+### Housekeeping :house:
+- build(deps): update to Carbon 11 compatible versions to latest (#9849)
+
+## `@carbon/ibm-products-styles@2.93.0`
+### Bug fixes :bug:
+- fix(tearsheet): horizontal scroll not working (#9778)
+- fix(preview-pageheader): fix tags spacing when tabs are absent (#9775)
+
+### Housekeeping :house:
+- chore(preview_PageHeader): use `TruncatedText` for title instead of `DefinitionTooltip` (#9742)
+- refactor(addselect): code cleanup and implementation improvements (#9729)
+
+## `@carbon/ibm-products-styles@2.92.0`
+### Features :rocket:
+- feat(Card): implement horizontal card (#9704)
+
+### Bug fixes :bug:
+- fix(aboutmodal): hyperlinks spacing to 12px (#9756)
+- fix(Tearsheet): design review changes and fixes in webcomponent (#9731)
+- fix(pageheader): fix overflow breadcrumb menu zindex (#9735)
+
+### Housekeeping :house:
+- chore(Card): Review and analyse Card implementation (WIP) (#9738)
+
 ## `@carbon/ibm-products-styles@2.91.0`
 ### Features :rocket:
 - feat(Card): implement card footer and primitives (#9659)
