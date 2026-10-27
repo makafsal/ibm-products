@@ -1,4 +1,18 @@
-## `@carbon/ibm-products-web-components@0.48.0-rc.0`
+## `@carbon/ibm-products-web-components@0.50.0`
+### Bug fixes :bug:
+- fix: webcomponents tests (#9947)
+- fix: tearsheet webcomponent fixes (#9902)
+- fix(guidebanner): fix spacing when there is no title (#9923)
+
+### Housekeeping :house:
+- docs: Add migration to Carbon (v12) overview story to Storybook (#9938)
+
+## `@carbon/ibm-products-web-components@0.49.0`
+### Bug fixes :bug:
+- fix(Tearsheet next): suppress all animations and transitions under prefers-reduced-motion (#9913)
+- fix(c4p-page-header): bug fixes and React parity gaps (#9877)
+
+## `@carbon/ibm-products-web-components@0.48.0`
 ### Bug fixes :bug:
 - fix: bignumber and notificationpanel parity after v12 migration (#9856)
 
